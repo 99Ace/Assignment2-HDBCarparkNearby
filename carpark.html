@@ -36,30 +36,35 @@
   </div>
   <!--</main>-->
 
-
-
   <script>
     /* global $ google navigator axios*/
     var map, map2, infoWindow;
     var dataSource = "https://api.data.gov.sg/v1/transport/carpark-availability"
-    var data, carparkData
+    var data
+    var carparkData = []
 
     $(function(){
       $("#carpark").click(function(){
         getDataFromEndpoint(function(data){
          
-          
-          
+          for (let item in data){
+            carparkData[item] = {
+              "carpark_number" :data[item].carpark_number,
+              "lot_type" : data[item].carpark_info[0]["lot_type"],
+              "lots_available" : data[item].carpark_info[0]["lots_available"],
+              "total_lots" : data[item].carpark_info[0]["total_lots"]
+            }
+          }
+           
           //****
-          carparkData= [
-             {
-              "lot_type" : data[0].carpark_info[0]["lot_type"],
-              "lots_available" : data[0].carpark_info[0]["lots_available"],
-              "total_lots" : data[0].carpark_info[0]["total_lots"],
-              "carpark_number" :data[0].carpark_number
-            },
-            
-          ]
+          // carparkData= [
+          //   {
+          //     "lot_type" : data[0].carpark_info[0]["lot_type"],
+          //     "lots_available" : data[0].carpark_info[0]["lots_available"],
+          //     "total_lots" : data[0].carpark_info[0]["total_lots"],
+          //     "carpark_number" :data[0].carpark_number
+          //   },
+          // ]
         
               
           console.log(carparkData)
@@ -148,7 +153,7 @@
       axios.get(dataSource)
         .then(function(response){
           let result = response.data.items[0].carpark_data;
-          console.log(result)
+          // console.log(result)
           callback(result);
 
         })
