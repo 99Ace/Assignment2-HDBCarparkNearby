@@ -47,16 +47,14 @@
     $(function(){
       $("#carpark").click(function(){
         getDataFromEndpoint(function(data){
-          // for (let item of data){
-          //   carparkData = {
-          //     carpark_number : [1]
-              
-          //   }
+     
           // }
-          // path : [""0""].carpark_info
+          // path : data["0"].carpark_info[0].lot_type / .lots_available / total_lots
+          // path : data["0"].carpark_number
           $("#entry-box").append(`<p>${data[0].carpark_info[0].lot_type}<p)`)
           $("#entry-box").append(`<p>${data[0].carpark_info[0].lots_available}<p)`)
           $("#entry-box").append(`<p>${data[0].carpark_info[0].total_lots}<p)`)
+          $("#entry-box").append(`<p>${data[0].carpark_number}<p)`)
 
         })
       })
