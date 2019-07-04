@@ -13,7 +13,6 @@
   <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
   <!--Own Scripts-->
   <link rel="stylesheet" href="style/style.css" type="text/css" />
-  <script type="text/javascript" src="scripts/script.js"></script>
   <style>
   </style>
   <title>Carpark availablity</title>
@@ -26,18 +25,16 @@
       <div class="map-frame"><div id="map"></div></div>
       <div class="zoom-frame"><div id="map2"></div></div>
     </div>
-    <div class="entry-frame"><div class="entry-box">
+    <div class="entry-frame"><div id="entry-box" class="entry-box">
       <p>https://api.data.gov.sg/v1/transport/taxi-availability</p>
       <ul>
         <li>Direction Service</li>
         <li>Markers</li>
       </ul>
-      <div class="button badge-primary">GET TAXI</div>
+      <div id="carpark" class="badge badge-primary">Find Carpark</div>
     </div></div>
   </div>
   <!--</main>-->
-
-
 
 
 
@@ -45,12 +42,28 @@
     /* global $ google navigator axios*/
     var map, map2, infoWindow;
     var dataSource = "https://api.data.gov.sg/v1/transport/carpark-availability"
-    var data = axios.get(dataSource)
-        .then(function(response){
-        })
-    console.log(data);
+    var data, carparkData
 
-    
+    $(function(){
+      $("#carpark").click(function(){
+        getDataFromEndpoint(function(data){
+          // for (let item of data){
+          //   carparkData = {
+          //     carpark_number : [1]
+              
+          //   }
+          // }
+          // path : [""0""].carpark_info
+          $("#entry-box").append(`<p>${data[0].carpark_info[0].lot_type}<p)`)
+          $("#entry-box").append(`<p>${data[0].carpark_info[0].lots_available}<p)`)
+          $("#entry-box").append(`<p>${data[0].carpark_info[0].total_lots}<p)`)
+
+        })
+      })
+      // alert("link")
+      // console.log(carparkData)
+
+    })
     
     function initMap() {
       map = new google.maps.Map(document.getElementById('map'), {
@@ -111,30 +124,24 @@
 
 
     // get data source function
-    function getDataFromEndpoint()
+    function getDataFromEndpoint(callback)
     {
-      
-      
+      axios.get(dataSource)
+        .then(function(response){
+          let result = response.data.items[0].carpark_data;
+          console.log(result)
+          callback(result);
+
+        })
+
     }
-    
-    
-    // function getDataFromEndpoint(callback)    {
-    //   axios.get(endpoint)
-    //   .then(function(response){
-    //       let results = response.data.features[0];
-    //       callback(response);
-    //       console.log(response)
-    //   });
-      
-    // }
-    
     
   </script>
 
 
   <!--Google Map link-->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA1nzF_4Fq-BZd-nGgxYlpdbzeAiBtkkkw&callback=initMap&libraries=places" async defer></script>
-
+  <script type="text/javascript" src="scripts/script.js"></script>
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
