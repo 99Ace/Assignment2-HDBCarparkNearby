@@ -56,3 +56,8 @@ for (let item in carparkAddInfo){
             "y_coord":carparkAddInfo[item].y_coord
           } 
         }
+
+// testing Object.assign - working set
+      // var x = [{"a":"b"},{"a":"b"},{"a":"b"}]
+      // Object.assign(x[0],{"c":"d"})
+      // var x = new carparkData
