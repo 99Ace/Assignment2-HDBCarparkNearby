@@ -32,6 +32,7 @@
     <div class="entry-frame">
       <div id="entry-box" class="entry-box">
         <p id="carpark-info">https://api.data.gov.sg/v1/transport/taxi-availability</p>
+        <input id="search" type="text" placeholder=" Enter the location "/>
         <ul>
           <li>Direction Service</li>
           <li>Markers</li>
@@ -44,8 +45,15 @@
 
   <script>
     /* global $ google navigator axios*/
- var map, map2, infoWindow;
-
+    var map, map2, infoWindow;
+    var service;
+    // NEW
+    var request = {
+          query: 'Museum of Contemporary Art Australia',
+          fields: ['name', 'geometry'],
+        };
+    // NEW    
+        
     function initMap() {
       map = new google.maps.Map(document.getElementById('map'), {
         center: { lat: 1.3521, lng: 103.8198 },
@@ -103,6 +111,7 @@
       infoWindow.open(map);
     }
     // Axios function to get data from the api
+    
   </script>
 
 
