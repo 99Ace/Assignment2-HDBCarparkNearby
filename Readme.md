@@ -13,6 +13,7 @@ Basic
 - display the map
 - get the current location of the user
 - exhibit to the user the various carparks availability status
+- limit the search-radius to within 200m 300m or 500m
 
 Intermediate
 - allow user to input the destination so that he can plan ahead for his journey
