@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -21,15 +21,14 @@
 <body>
   <div class="main-frame bg-dark ">
     <div class="entry-frame row">
-      <div id="entry-box" class="entry-box bg-secondary">
+        <div id="entry-box" class="entry-box bg-secondary">
         <h1><span class="text-warning">HDB</span>Park Near ME</h1>
         <h2>How to use find the carpark</h2>
         <ul id="carpark-info">
-        <li>Step 1: Use Current Location or Enter Destination</li>
-        <li>Step 2: Set the viewing radius for surrounding carparks</li>
+          <li>Step 1: Use Current Location or Enter Destination</li>
+          <li>Step 2: Set the viewing radius for surrounding carparks</li>
         </ul>
-        
-        <input id="carpark" type="button" class="badge-warning" value="Use my location">
+        <input id="carpark" type="button" class="badge-warning" value="Use my location" />
         <span> or </span>
         <input id="search" type="text" placeholder=" Enter the location" />
         <button id="location-submit" class="badge-primary"> Go to the location</button>
@@ -38,10 +37,9 @@
           <option value="">500m</option>                    
           <option value="">2km</option>                    
         </select>
-          
       </div>
       <div id="entry-box" class="entry-box bg-white">
-          <h3><span class="text-warning">Nearby Carparks</h3>
+        <h3><span class="text-warning">Nearby Carparks</span></h3>
           <li>test<span> lot available </span><span>distance</span></li>
           <li>test<span> lot available </span><span>distance</span></li>
           <li>test<span> lot available </span><span>distance</span></li>
@@ -55,15 +53,10 @@
         <div id="map"></div>
       </div>
       <div class="zoom-frame">
-        <div id="map2"></div>
+        <!--<div id="map2"></div>-->
       </div>
     </div>
   </div>
-
-  <script>
-    /* global $ google navigator axios infowindow*/
-
-  </script>
 
   <script type="text/javascript" src="scripts/script.js"></script>
   <!--Google Map link-->
@@ -77,3 +70,4 @@
 </body>
 
 </html>
+ 
