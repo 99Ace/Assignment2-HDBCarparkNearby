@@ -1,10 +1,10 @@
 /*global $ google setMapOnAll navigator*/
 var map, infoWindow;
 var service; //Load map for PlacesService
-// var locationSearch = {
-//   query: 'Zoo Singapore',
-//   fields: ['name', 'geometry'],
-// }; //for holding the data to set the map
+var locationSearch = {
+  query: 'Zoo Singapore',
+  fields: ['name', 'geometry'],
+}; //for holding the data to set the map
 var markers = [];
 // var service = new google.maps.places.PlacesService(map);
 
@@ -20,6 +20,29 @@ function initMap() {
   service = new google.maps.places.PlacesService(map);
   
   getCurrentLocation();
+
+  // var input = document.getElementById('entry-box');
+  var input ="Singapore Zoo"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   // searchAndPlace(locationSearch)
   // var searchBox = new google.maps.places.SearchBox(input);
    
@@ -117,16 +140,35 @@ function markerPlacement(myLatLng, map) {
   console.log(markers);
 }
 //Search for location and place a marker on the map and center to the location
-// function searchAndPlace(locationSearch){
-//     service.findPlaceFromQuery(locationSearch, function(results, status) {
-//       if (status === google.maps.places.PlacesServiceStatus.OK) {
-//         for (var i = 0; i < results.length; i++) {
-//           createMarker(results[i]);
-//           console.log(results[i]);
-//           // markerPlacement(results[i], map);
-//         }
-//         map.setCenter(results[0].geometry.location);
-//         console.log (results[0].geometry.location)
-//       }
-//     });
-// }
+function searchAndPlace(locationSearch){
+    service.findPlaceFromQuery(locationSearch, function(results, status) {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        for (var i = 0; i < results.length; i++) {
+          createMarker(results[i]);
+          console.log(results[i]);
+          // markerPlacement(results[i], map);
+        }
+        map.setCenter(results[0].geometry.location);
+        console.log (results[0].geometry.location)
+      }
+    });
+}
+function createMarker(place) {
+  var marker = new google.maps.Marker({
+    position: place.geometry.location,
+    map: map,
+  });
+  google.maps.event.addListener(marker, 'click', function() {
+    infowindow.setContent(place.name);
+    infowindow.open(map, this);
+  });
+  console.log(place.name);
+}
+
+$(function() {
+  // Get the input location from user; Set to search within Singapore Only
+  $("#location-submit").click(function() {
+    locationSearch.query = ($("#search").val()) + " Singapore"; 
+    searchAndPlace(locationSearch);
+  })
+})
