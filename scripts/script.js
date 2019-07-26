@@ -1,4 +1,4 @@
-/*global $ google setMapOnAll navigator*/
+/*global $ google setMapOnAll navigator axios*/
 var map, infoWindow;
 var service; //Load map for PlacesService
 var locationSearch = {
@@ -6,7 +6,8 @@ var locationSearch = {
   fields: ['name', 'geometry'],
 }; //for holding the data to set the map
 var markers = [];
-var temp
+var convertSV21;
+var temp;
 
 //GOOGLE MAP FUNCTIONS
 //DISPLAY MAP
@@ -99,9 +100,11 @@ var carparkData = []
 function getDataFromEndpoint(callback) {
   axios.get(dataSource)
     .then(function(response) {
-      let result = response.data.items[0].carpark_data;
-      // // console.log(result)
-      callback(result)
+      if (response){
+        let result = response.data.items[0].carpark_data;
+        // // console.log(result)
+        callback(result)
+      }
     })
 }
 //AXIO TO GET DATA FROM JSON FILE (local)
@@ -128,45 +131,42 @@ function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
 }
 
 //AXIO TO GET DATA FROM API
-function getConvertData(x,y) {
-  var convertSV21 = `https://developers.onemap.sg/commonapi/convert/3414to4326?X=${x}&Y=${y}`
+function getConvertData(callback) {
   axios.get(convertSV21)
     .then(function(response) {
       let result = response.data;
       console.log(result)
-      temp = {
+      var pos = {
         lat : result.latitude,
         lng : result.longitude
       }
-      // callback(result)
+      callback(pos);
     })
 }
-var x=33758.4143;
-var y=33695.5198;
-getConvertData(x,y)
+
+
+// var x=33758.4143;
+// var y=33695.5198;
+// temp = getConvertData(x,y)
 // alert (getDistanceFromLatLonInKm(1.3521, 103.8198, 1.3531,103.8198 ))
+// console.log(temp)
 
-
-
-
-//FUNCTION TO MERGE DATA FROM API AND JSON FILE
+//ORIGINAL working set
 getDataFromFile(function(carparkAddInfo){
   getDataFromEndpoint(function(data){
     for (let item in data) {
-      carparkData[item] = {
-        "carpark_number": data[item].carpark_number,
-        "lot_type": data[item].carpark_info[0]["lot_type"],
-        "lots_available": data[item].carpark_info[0]["lots_available"],
-        "total_lots": data[item].carpark_info[0]["total_lots"]
-      };
-
+      var temp = []
+      temp[item] = { "carpark_number": data[item].carpark_number }
+      
+      // console.log(temp)
+      // console.log(carparkAddInfo[item2].car_park_no)
       for (let item2 in carparkAddInfo) {
-        
-        // if (result == 'undefined'){
-        //   console.log(data[item])
-        // }
-        if (carparkAddInfo[item2].car_park_no == data[item].carpark_number) {
-          Object.assign(carparkData[item], {
+        if (carparkAddInfo[item2].car_park_no == temp[item].carpark_number) {
+          carparkData[item] = {
+            "carpark_number": data[item].carpark_number,
+            "lot_type": data[item].carpark_info[0]["lot_type"],
+            "lots_available": data[item].carpark_info[0]["lots_available"],
+            "total_lots": data[item].carpark_info[0]["total_lots"],
             "address": carparkAddInfo[item2].address,
             "car_park_basement": carparkAddInfo[item].car_park_basement,
             "car_park_decks": carparkAddInfo[item].car_park_decks,
@@ -177,12 +177,52 @@ getDataFromFile(function(carparkAddInfo){
             "short_term_parking": carparkAddInfo[item].short_term_parking,
             "type_of_parking_system": carparkAddInfo[item].type_of_parking_system,
             "x_coord": carparkAddInfo[item].x_coord,
-            "y_coord": carparkAddInfo[item].y_coord})
+            "y_coord": carparkAddInfo[item].y_coord}
         } 
       }
     }
   })
 })
+// getDataFromFile(function(carparkAddInfo){
+//   getDataFromEndpoint(function(data){
+//     for (let item in data) {
+//       carparkData[item] = {
+//         "carpark_number": data[item].carpark_number,
+//         "lot_type": data[item].carpark_info[0]["lot_type"],
+//         "lots_available": data[item].carpark_info[0]["lots_available"],
+//         "total_lots": data[item].carpark_info[0]["total_lots"]
+//       };
+
+//       for (let item2 in carparkAddInfo) {
+//         if (carparkAddInfo[item2].car_park_no == data[item].carpark_number) {
+  
+//           Object.assign(carparkData[item], {
+//             "address": carparkAddInfo[item2].address,
+//             "car_park_basement": carparkAddInfo[item].car_park_basement,
+//             "car_park_decks": carparkAddInfo[item].car_park_decks,
+//             "car_park_type": carparkAddInfo[item].car_park_type,
+//             "free_parking": carparkAddInfo[item].free_parking,
+//             "gantry_height": carparkAddInfo[item].gantry_height,
+//             "night_parking": carparkAddInfo[item].night_parking,
+//             "short_term_parking": carparkAddInfo[item].short_term_parking,
+//             "type_of_parking_system": carparkAddInfo[item].type_of_parking_system,
+//             "x_coord": carparkAddInfo[item].x_coord,
+//             "y_coord": carparkAddInfo[item].y_coord})
+//         } 
+//       }
+//     }
+//   })
+// })
+// alert("testing")
+
+// datatest = [
+//   {a:1,b:2},
+//   {c:1,d:2},
+//   {e:1,f:2},
+//   {g:1,h:2},
+//   ]
+  
+// console.log(datatest)
 console.log(carparkData)
 
 $(function() {
@@ -203,11 +243,7 @@ $(function() {
   //TO DETECT FOR CLICK FOR SUBMIT
   $('#current-location').click(function(){
     clearMarker();
-    // getCurrentLocation();
-        
-    
-    
-    markerPlacement(temp, map)
+    getCurrentLocation()
 
   });
   //TO DETECT CHANGE IN DROP-DOWN SELECTION FOR THE RADIUS OF VIEW FOR NEARBY CARPARKS
@@ -223,4 +259,8 @@ $(function() {
         alert('2km')
       }
   });
+  
+  $('#start-prog').click(function(){
+    alert("clicked liao");
+  })
 })
