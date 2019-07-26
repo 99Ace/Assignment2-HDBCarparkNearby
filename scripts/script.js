@@ -6,6 +6,7 @@ var locationSearch = {
   fields: ['name', 'geometry'],
 }; //for holding the data to set the map
 var markers = [];
+var temp
 
 //GOOGLE MAP FUNCTIONS
 //DISPLAY MAP
@@ -26,8 +27,9 @@ function getCurrentLocation(){
     navigator.geolocation.getCurrentPosition(function(position) { // get user position
       var pos = {
         lat: position.coords.latitude,
-        lng: position.coords.longitude,
+        lng: position.coords.longitude
       };
+      // console.log(position.coords)
       infoWindow.setPosition(pos); // set the window to the location of user
       markerPlacement(pos, map) //set the marker to the location of the user, pos contains the lat and lng
       map.setCenter(pos); //Set the map to center to the position set in pos
@@ -91,6 +93,7 @@ function searchAndPlace(locationSearch){
 
 var dataSource = "https://api.data.gov.sg/v1/transport/carpark-availability";
 var dataSource2 = "carparkdata.json";
+var convertSV21 = "https://developers.onemap.sg/commonapi/convert/3414to4326?X=30314.7936&Y=31490.4942"
 var carparkData = []
 
 //AXIO TO GET DATA FROM API
@@ -125,8 +128,25 @@ function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
   return d;
 }
 
+//AXIO TO GET DATA FROM API
+function getConvertData() {
+  axios.get(convertSV21)
+    .then(function(response) {
+      let result = response.data;
+      console.log(result)
+      temp = {
+        lat : result.latitude,
+        lng : result.longitude
+      }
+      // callback(result)
+    })
+}
+getConvertData()
+// console.log(temp)
 
 // alert (getDistanceFromLatLonInKm(1.3521, 103.8198, 1.3531,103.8198 ))
+
+
 
 
 //FUNCTION TO MERGE DATA FROM API AND JSON FILE
@@ -139,7 +159,12 @@ getDataFromFile(function(carparkAddInfo){
         "lots_available": data[item].carpark_info[0]["lots_available"],
         "total_lots": data[item].carpark_info[0]["total_lots"]
       };
+
       for (let item2 in carparkAddInfo) {
+        
+        // if (result == 'undefined'){
+        //   console.log(data[item])
+        // }
         if (carparkAddInfo[item2].car_park_no == data[item].carpark_number) {
           Object.assign(carparkData[item], {
             "address": carparkAddInfo[item2].address,
@@ -152,27 +177,50 @@ getDataFromFile(function(carparkAddInfo){
             "short_term_parking": carparkAddInfo[item].short_term_parking,
             "type_of_parking_system": carparkAddInfo[item].type_of_parking_system,
             "x_coord": carparkAddInfo[item].x_coord,
-            "y_coord": carparkAddInfo[item].y_coord
-          })
-
-        }
-      } //Working Set : Do not change
+            "y_coord": carparkAddInfo[item].y_coord})
+        } 
+      }
     }
   })
 })
+console.log(carparkData)
 
-
-  
-// console.log(carparkData)
 $(function() {
-  // Get the input location from user; Set to search within Singapore Only
+  //TO DETECT FOR CLICK FOR SEARCH & PLACE NEW MARKER
   $("#location-submit").click(function() {
-    // marker.setMap(null);
     locationSearch.query = ($("#search").val()) + " Singapore"; 
     searchAndPlace(locationSearch);
+    $("#search").val();
   });
+  //TO DETECT FOR 'ENTER' BY USER FOR SEARCH & PLACE NEW MARKER
+  $("#search").keyup(function(){
+    if (event.keyCode === 13) {
+      locationSearch.query = ($("#search").val()) + " Singapore"; 
+      searchAndPlace(locationSearch);
+      $("#search").val();      
+    }
+  })
+  //TO DETECT FOR CLICK FOR SUBMIT
   $('#current-location').click(function(){
     clearMarker();
-    getCurrentLocation();
+    // getCurrentLocation();
+        
+    
+    
+    markerPlacement(temp, map)
+
+  });
+  //TO DETECT CHANGE IN DROP-DOWN SELECTION FOR THE RADIUS OF VIEW FOR NEARBY CARPARKS
+  $(".search-drop").change(function() {
+      var v = $('.search-drop').val();
+      if (v == 0){
+        alert("500m");
+      } 
+      else if (v == 1){
+        alert('1km')
+      }
+      else {
+        alert('2km')
+      }
   });
 })
