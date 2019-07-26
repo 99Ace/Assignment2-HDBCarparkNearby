@@ -93,7 +93,6 @@ function searchAndPlace(locationSearch){
 
 var dataSource = "https://api.data.gov.sg/v1/transport/carpark-availability";
 var dataSource2 = "carparkdata.json";
-var convertSV21 = "https://developers.onemap.sg/commonapi/convert/3414to4326?X=30314.7936&Y=31490.4942"
 var carparkData = []
 
 //AXIO TO GET DATA FROM API
@@ -129,7 +128,8 @@ function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
 }
 
 //AXIO TO GET DATA FROM API
-function getConvertData() {
+function getConvertData(x,y) {
+  var convertSV21 = `https://developers.onemap.sg/commonapi/convert/3414to4326?X=${x}&Y=${y}`
   axios.get(convertSV21)
     .then(function(response) {
       let result = response.data;
@@ -141,9 +141,9 @@ function getConvertData() {
       // callback(result)
     })
 }
-getConvertData()
-// console.log(temp)
-
+var x=33758.4143;
+var y=33695.5198;
+getConvertData(x,y)
 // alert (getDistanceFromLatLonInKm(1.3521, 103.8198, 1.3531,103.8198 ))
 
 
