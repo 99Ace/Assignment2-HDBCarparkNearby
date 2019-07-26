@@ -157,7 +157,11 @@ getDataFromFile(function(carparkAddInfo){
           convertSV21 = `https://developers.onemap.sg/commonapi/convert/3414to4326?X=${carparkAddInfo[item2].x_coord}&Y=${carparkAddInfo[item2].y_coord}`;
           getConvertData(function(latLngConverted){
           console.log(latLngConverted)          
-          
+          var pos = {
+            lat : latLngConverted.latitude,
+            lng : latLngConverted.longitude
+          }
+          markerPlacement(pos,map)
           
           carparkData[item] = {
             "carpark_number": data[item].carpark_number,
