@@ -17,7 +17,6 @@ function initMap() {
   infoWindow = new google.maps.InfoWindow;
   service = new google.maps.places.PlacesService(map);
   getCurrentLocation();
-  
 }
 //FUNCTION TO GET THE LOCATION OF USER
 function getCurrentLocation(){
@@ -28,10 +27,28 @@ function getCurrentLocation(){
         lat: position.coords.latitude,
         lng: position.coords.longitude
       };
-      // console.log(position.coords)
       infoWindow.setPosition(pos); // set the window to the location of user
       markerPlacement(pos, map) //set the marker to the location of the user, pos contains the lat and lng
       map.setCenter(pos); //Set the map to center to the position set in pos
+      // for (let item in carparkData) {
+      //   var latPos = pos.lat;
+      //   var lngPos = pos.lng;
+      //   var latCP = carparkData[item].x_coord;
+      //   var lngCP = carparkData[item].y_coord;
+      //   var distance = getDistanceFromLatLonInKm(latPos, lngPos, latCP, lngCP)
+      //   var posCP = {
+      //     lat : latPos,
+      //     lng : lngPos
+      //   };
+      //   markerPlacement(posCP,map);
+      // }
+      for (let item in carparkData) {
+        var pos = {
+              lat:carparkData[item].x_coord,
+              lng:carparkData[item].y_coord
+            }  
+        markerPlacement(pos,map)
+      } 
     }, function() {
       handleLocationError(true, infoWindow, map.getCenter());
     });
@@ -127,42 +144,42 @@ function getConvertData(callback) {
 }
 
 //HEVERSINE FORMULA TO CALCULATE DISTANCE BETWEEN 2 LATLNG (CREDIT to stackOverflow solution)
-function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
   var R = 6371; // Radius of the earth in km
-  var dLat = deg2rad(lat2 - lat1); // deg2rad below
-  var dLon = deg2rad(lon2 - lon1);
-  var a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-    Math.sin(dLon / 2) * Math.sin(dLon / 2);
-  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  var dLat = deg2rad(lat2-lat1);  // deg2rad below
+  var dLon = deg2rad(lon2-lon1); 
+  var a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2)
+    ; 
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
   var d = R * c; // Distance in km
   return d;
 }
+function deg2rad(deg) {
+  return deg * (Math.PI/180)
+}
 
-// temp = getConvertData(x,y)
+
+
+ 
+  
 // alert (getDistanceFromLatLonInKm(1.3521, 103.8198, 1.3531,103.8198 ))
-// console.log(temp)
+
 
 //ORIGINAL working set
 getDataFromFile(function(carparkAddInfo){
-  console.log(carparkAddInfo);
+  // console.log(carparkAddInfo);
   getDataFromEndpoint(function(data){
-    console.log(data)
+    // console.log(data)
     for (let item in data) {
-      var temp = []
-      temp[item] = { "carpark_number": data[item].carpark_number }
+      var temp_data = []
+      temp_data[item] = { "carpark_number": data[item].carpark_number }
       for (let item2 in carparkAddInfo) {
-        if (carparkAddInfo[item2].car_park_no == temp[item].carpark_number) {
+        if (carparkAddInfo[item2].car_park_no == temp_data[item].carpark_number) {
           convertSV21 = `https://developers.onemap.sg/commonapi/convert/3414to4326?X=${carparkAddInfo[item2].x_coord}&Y=${carparkAddInfo[item2].y_coord}`;
           getConvertData(function(latLngConverted){
-          console.log(latLngConverted)          
-          var pos = {
-            lat : latLngConverted.latitude,
-            lng : latLngConverted.longitude
-          }
-          markerPlacement(pos,map)
-          
           carparkData[item] = {
             "carpark_number": data[item].carpark_number,
             "lot_type": data[item].carpark_info[0]["lot_type"],
@@ -180,60 +197,55 @@ getDataFromFile(function(carparkAddInfo){
             "x_coord": latLngConverted.latitude,
             "y_coord": latLngConverted.longitude
             }
+          // var pos = {
+          //   lat:carparkData[item].x_coord,
+          //   lng:carparkData[item].y_coord
+          // }  
+          // markerPlacement(pos,map)
           })
         } 
       }
     }
-
   })
 })
   
-  
-  
-  
 
-   
-
-
-    
-console.log(carparkData)
-
-$(function() {
-  //TO DETECT FOR CLICK FOR SEARCH & PLACE NEW MARKER
+$(function() {//TO DETECT FOR CLICK FOR SEARCH & PLACE NEW MARKER
   $("#location-submit").click(function() {
-    locationSearch.query = ($("#search").val()) + " Singapore"; 
+    locationSearch.query = ($("#find-place").val()) + " Singapore"; 
     searchAndPlace(locationSearch);
-    $("#search").val();
+    $("#find-place").val("");
   });
   //TO DETECT FOR 'ENTER' BY USER FOR SEARCH & PLACE NEW MARKER
-  $("#search").keyup(function(){
+  $("#find-place").keyup(function(){
     if (event.keyCode === 13) {
-      locationSearch.query = ($("#search").val()) + " Singapore"; 
+      locationSearch.query = ($("#find-place").val()) + " Singapore"; 
       searchAndPlace(locationSearch);
-      $("#search").val();      
+      $("#find-place").val("");      
     }
   })
   //TO DETECT FOR CLICK FOR SUBMIT
   $('#current-location').click(function(){
+    alert("link")
     clearMarker();
     getCurrentLocation()
-
   });
   //TO DETECT CHANGE IN DROP-DOWN SELECTION FOR THE RADIUS OF VIEW FOR NEARBY CARPARKS
-  $(".search-drop").change(function() {
-      var v = $('.search-drop').val();
-      if (v == 0){
-        alert("500m");
-      } 
-      else if (v == 1){
-        alert('1km')
-      }
-      else {
-        alert('2km')
-      }
-  });
-  
-  $('#start-prog').click(function(){
-    alert("clicked liao");
-  })
+  // $(".search-drop").change(function() {
+  //     var v = $('.search-drop').val();
+  //     if (v == 0){
+  //       alert("500m");
+  //     } 
+  //     else if (v == 1){
+  //       alert('1km')
+  //     }
+  //     else {
+  //       alert('2km')
+  //     }
+  // });
+
+  // $('#start').click(function(){
+  //   $("#introduction").hide()
+  //   $("#search-frame").fadeIn(500)
+  // })
 })

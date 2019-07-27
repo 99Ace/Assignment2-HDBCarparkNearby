@@ -6,87 +6,35 @@
 html,
 body {
     height: 100vh;
+    width:100%;
     margin: 0;
     padding: 0;
     font-size: 1em;
 }
-#introduction{
-    height:100vh; 
-    width: 100%;
-    padding:5%;
-    display:flex;
-    justify-content:center; 
-    align-items:center;
-    background-color:rgba(25,25,25,0.5)
-}
-.main-frame {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 6% 2% 2%;
-}
-
-.display-frame {
-    height: 60%;
-    width: 100%;
-    margin: 0;
-    padding: 0%;
-}
-.entry-frame {
-    height: 40%;
-    width: 100%;
-    background: linear-gradient(silver, gray);
-    margin: 0;
-    padding: 0%;
-}
-.map-frame {
-    height: 100%;
-    width: 90%;
-    margin: 0;
-    background: linear-gradient(silver, gray);
-    padding: 1%;
+#main-frame{
+    height:100vh;
+    width:100%
 }
 #map {
     height: 100%;
-    width: 100%;
+    width: 70%
 }
-.zoom-frame {
-    height: 100%;
-    width: 10%;
-    margin: 0;
-    background: linear-gradient(silver, gray);
-    padding: 1%;
+.entry-frame{
+    height:100%;
+    width:30%
 }
-
-#map2 {
-    height: 100%;
-    width: 100%;
+/*#search-frame{*/
+/*    display:none;*/
+/*}*/
+.entry-frame img{
+    width:10%;
 }
-
-
-.entry-box {
-    height: 100%;
-    width: 50%;
-    /*background: cyan;*/
-    padding: 1%;
-
+.header-frame{
+    height:15%;
+    width:100%
 }
 
-.instruction-frame {
-    width: 30%;
-    height: 100%;
-    margin:0;
-    padding:0;
-    /*background:pink;*/
-}
-
-.selection-frame {
-    width: 70%;
-    height: 100%;
-    background: linear-gradient(silver, gray);
-    margin:0;
-    padding:0;
-}
-.search-drop{
-    all:none;
+/*PRESET COLORS*/
+.white{
+    color:white;
 }
