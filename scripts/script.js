@@ -6,6 +6,7 @@ var locationSearch = {
   fields: ['name', 'geometry'],
 }; //for holding the data to set the map
 var markers = [];
+var checker = [];
 
 //GOOGLE MAP FUNCTIONS
 //DISPLAY MAP
@@ -16,10 +17,10 @@ function initMap() {
   });
   infoWindow = new google.maps.InfoWindow;
   service = new google.maps.places.PlacesService(map);
-  getCurrentLocation();
+  getCurrentLocation(1);
 }
 //FUNCTION TO GET THE LOCATION OF USER
-function getCurrentLocation(){
+function getCurrentLocation(radius){
   if (navigator.geolocation) {
     //get the location of the user current position
     navigator.geolocation.getCurrentPosition(function(position) { // get user position
@@ -30,25 +31,65 @@ function getCurrentLocation(){
       infoWindow.setPosition(pos); // set the window to the location of user
       markerPlacement(pos, map) //set the marker to the location of the user, pos contains the lat and lng
       map.setCenter(pos); //Set the map to center to the position set in pos
+      
+      if (radius == 0){
+        for (let item in carparkData){
+          var latPos = pos.lat;
+          var lngPos = pos.lng;
+          var latCP = carparkData[item].x_coord;
+          var lngCP = carparkData[item].y_coord;
+          var distance = getDistanceFromLatLonInKm(latPos,lngPos,latCP,lngCP);
+          checker.push(distance);
+          if (distance <= 0.5){
+            var cp = {
+              lat : latCP,
+              lng : lngCP
+            };
+            markerCarparks(cp, map);
+          }
+        }
+      }
+      if (radius == 1){
+        for (let item in carparkData){
+          var latPos = pos.lat;
+          var lngPos = pos.lng;
+          var latCP = carparkData[item].x_coord;
+          var lngCP = carparkData[item].y_coord;
+          var distance = getDistanceFromLatLonInKm(latPos,lngPos,latCP,lngCP);
+          checker.push(distance);
+          if (distance <= 1){
+            var cp = {
+              lat : latCP,
+              lng : lngCP
+            };
+            markerCarparks(cp, map);
+          }
+        }
+      }
+      if (radius == 2){
+        for (let item in carparkData){
+          var latPos = pos.lat;
+          var lngPos = pos.lng;
+          var latCP = carparkData[item].x_coord;
+          var lngCP = carparkData[item].y_coord;
+          var distance = getDistanceFromLatLonInKm(latPos,lngPos,latCP,lngCP);
+          checker.push(distance);
+          if (distance <= 2){
+            var cp = {
+              lat : latCP,
+              lng : lngCP
+            };
+            markerCarparks(cp, map);
+          }
+        }
+      }
       // for (let item in carparkData) {
-      //   var latPos = pos.lat;
-      //   var lngPos = pos.lng;
-      //   var latCP = carparkData[item].x_coord;
-      //   var lngCP = carparkData[item].y_coord;
-      //   var distance = getDistanceFromLatLonInKm(latPos, lngPos, latCP, lngCP)
-      //   var posCP = {
-      //     lat : latPos,
-      //     lng : lngPos
-      //   };
-      //   markerPlacement(posCP,map);
-      // }
-      for (let item in carparkData) {
-        var pos = {
-              lat:carparkData[item].x_coord,
-              lng:carparkData[item].y_coord
-            }  
-        markerPlacement(pos,map)
-      } 
+      //   var pos = {
+      //         lat:carparkData[item].x_coord,
+      //         lng:carparkData[item].y_coord
+      //       }  
+      //   markerPlacement(pos,map)
+      // } 
     }, function() {
       handleLocationError(true, infoWindow, map.getCenter());
     });
@@ -69,10 +110,21 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
 //CREATE MARKER FUNCTION FOR CURRENT LOCATION
 function markerPlacement(myLatLng, map) { 
   var marker = new google.maps.Marker({
+          map: map,
+          draggable: true,
+          animation: google.maps.Animation.DROP,
+          position: myLatLng
+        });
+  markers.push(marker);
+}
+function markerCarparks(myLatLng, map) { 
+  var icon = "https://img.icons8.com/color/48/000000/map-pin.png"
+  var marker = new google.maps.Marker({
     position: myLatLng,
-    map: map
+    map: map,
+    icon : icon
     // title: 'Your location'
-  })
+  });
   markers.push(marker);
 }
 function createMarker(place,map) {
@@ -87,6 +139,13 @@ function createMarker(place,map) {
   });
   markers.push(marker);
 }
+function toggleBounce() {
+        if (marker.getAnimation() !== null) {
+          marker.setAnimation(null);
+        } else {
+          marker.setAnimation(google.maps.Animation.BOUNCE);
+        }
+      }
 //FUNCTION TO REMOVE MARKERS
 function clearMarker(){
   markers.forEach(function(marker) {
@@ -167,15 +226,14 @@ function deg2rad(deg) {
   
 // alert (getDistanceFromLatLonInKm(1.3521, 103.8198, 1.3531,103.8198 ))
 
-
 //ORIGINAL working set
 getDataFromFile(function(carparkAddInfo){
   // console.log(carparkAddInfo);
   getDataFromEndpoint(function(data){
     // console.log(data)
     for (let item in data) {
-      var temp_data = []
-      temp_data[item] = { "carpark_number": data[item].carpark_number }
+      var temp_data = [];
+      temp_data[item] = { "carpark_number": data[item].carpark_number };
       for (let item2 in carparkAddInfo) {
         if (carparkAddInfo[item2].car_park_no == temp_data[item].carpark_number) {
           convertSV21 = `https://developers.onemap.sg/commonapi/convert/3414to4326?X=${carparkAddInfo[item2].x_coord}&Y=${carparkAddInfo[item2].y_coord}`;
@@ -226,9 +284,9 @@ $(function() {//TO DETECT FOR CLICK FOR SEARCH & PLACE NEW MARKER
   })
   //TO DETECT FOR CLICK FOR SUBMIT
   $('#current-location').click(function(){
-    alert("link")
+    var radius = $('.search-drop').val();
     clearMarker();
-    getCurrentLocation()
+    getCurrentLocation(radius);
   });
   //TO DETECT CHANGE IN DROP-DOWN SELECTION FOR THE RADIUS OF VIEW FOR NEARBY CARPARKS
   // $(".search-drop").change(function() {
