@@ -32,7 +32,7 @@ function getCurrentLocation() {
       markerPlacement(pos, map) //set the marker to the location of the user, pos contains the lat and lng
       map.setCenter(pos); //Set the map to center to the position set in pos
       //GET FUNCTION TO FIND AND DISPLAY THE CARPARKS WITHIN THE USER RANGE BASED ON THE USER'S CURRENT LOCATION
-      carparkInRadius(pos)
+      carparkInRadius(pos.lat, pos.lng)
     }, function() {
       handleLocationError(true, infoWindow, map.getCenter());
     });
@@ -113,6 +113,9 @@ function autoCompleteEntry(radius){
       infowindowContent.children['place-address'].textContent = address;
       // place the marker
       infowindow.open(map, marker);
+      // console.log(marker.position.lat())
+      
+      carparkInRadius(marker.position.lat(), marker.position.lng())
     })  
 }
 //CREATE MARKER FUNCTION FOR CURRENT LOCATION
@@ -192,11 +195,11 @@ function markerCarparks(myLatLng, map) {
 //     i++;
 //   }
 // }
-function carparkInRadius(pos){
+function carparkInRadius(lat, lng){
   var checker = [];
   for (let item in carparkData) {
-    var latPos = pos.lat;
-    var lngPos = pos.lng;
+    var latPos = lat;
+    var lngPos = lng;
     var latCP = carparkData[item].x_coord;
     var lngCP = carparkData[item].y_coord;
     var distance = getDistanceFromLatLonInKm(latPos, lngPos, latCP, lngCP);
