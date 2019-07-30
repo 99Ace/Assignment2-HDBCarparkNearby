@@ -41,11 +41,14 @@
             <!--CLICK TO ACTIVATE CURRENT LOCATION FUNCTION-->
             <div class="ml-4">
                 <label>Find carparks within </label>
-                <select class="search-drop" name="radius">
-                      <option value="1">1km</option>                    
-                      <option value="0">500m</option>                    
-                      <option value="2">2km</option>                    
-                    </select>
+                <div id="country-selector" class="pac-controls">
+                    <input type="radio" name="type" class="radius" value="0.5">
+                    <label>500m</label>
+                    <input type="radio" name="type" class="radius" value="1" checked="checked">
+                    <label>1km</label>
+                    <input type="radio" name="type" class="radius" value="2">
+                    <label>2km</label>
+                </div>
             </div>
             <div class="ml-4">
                 <img src="https://img.icons8.com/material/48/000000/worldwide-location.png">
@@ -56,46 +59,13 @@
                 <img src="https://img.icons8.com/ios/48/000000/search--v1.png">
                 <input id="place-input" type="text" placeholder="Enter your destination" class="w-75"/>
                 <div id="infowindow-content">
-                  <!-- PLACE ICON INFO -->
-                  <img src="" width="16" height="16" id="place-icon"> 
-                  <!-- PLACE PLACE NAME  -->
-                  <span id="place-name"  class="title"></span><br>
-                  <!-- PLACE PLACE ADDRESS -->
-                  <span id="place-address"></span>
+                <!-- PLACE ICON INFO -->
+                <img src="" width="16" height="16" id="place-icon"> 
+                <!-- PLACE PLACE NAME  -->
+                <span id="place-name"  class="title"></span><br>
+                <!-- PLACE PLACE ADDRESS -->
+                <span id="place-address"></span>
                 </div>
-                
-                <!--<div class="pac-card" id="pac-card">-->
-                <!--    <div>-->
-                <!--        <div id="title">-->
-                <!--            Autocomplete search-->
-                <!--        </div>-->
-                <!--        <div id="type-selector" class="pac-controls">-->
-                <!--            <input type="radio" name="type" id="changetype-all" checked="checked">-->
-                <!--            <label for="changetype-all">All</label>-->
-
-                <!--            <input type="radio" name="type" id="changetype-establishment">-->
-                <!--            <label for="changetype-establishment">Establishments</label>-->
-
-                <!--            <input type="radio" name="type" id="changetype-address">-->
-                <!--            <label for="changetype-address">Addresses</label>-->
-
-                <!--            <input type="radio" name="type" id="changetype-geocode">-->
-                <!--            <label for="changetype-geocode">Geocodes</label>-->
-                <!--        </div>-->
-                <!--        <div id="strict-bounds-selector" class="pac-controls">-->
-                <!--            <input type="checkbox" id="use-strict-bounds" value="">-->
-                <!--            <label for="use-strict-bounds">Strict Bounds</label>-->
-                <!--        </div>-->
-                <!--    </div>-->
-                <!--    <div id="pac-container">-->
-                <!--        <input id="pac-input" type="text" placeholder="Enter a location">-->
-                <!--    </div>-->
-                <!--</div>-->
-            <!--    <div id="map"></div>-->
-            <!--    <div id="infowindow-content">-->
-            <!--        <img src="" width="16" height="16" id="place-icon">-->
-            <!--        <span id="place-name" class="title"></span><br>-->
-            <!--        <span id="place-address"></span>-->
             </div>
 
             <!--</div>-->

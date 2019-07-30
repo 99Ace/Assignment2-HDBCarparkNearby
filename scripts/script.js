@@ -6,7 +6,7 @@ var locationSearch = {
   fields: ['name', 'geometry'],
 }; //for holding the data to set the map
 var markers = [];
-
+var radius;
 
 //GOOGLE MAP FUNCTIONS
 //DISPLAY MAP
@@ -16,11 +16,11 @@ function initMap() {
     zoom: 15
   });
   infoWindow = new google.maps.InfoWindow;
-  getCurrentLocation(1);
+  getCurrentLocation();
   autoCompleteEntry();
 }
 //FUNCTION TO GET THE LOCATION OF USER
-function getCurrentLocation(radius) {
+function getCurrentLocation() {
   if (navigator.geolocation) {
     //get the location of the user current position
     navigator.geolocation.getCurrentPosition(function(position) { // get user position
@@ -31,59 +31,8 @@ function getCurrentLocation(radius) {
       infoWindow.setPosition(pos); // set the window to the location of user
       markerPlacement(pos, map) //set the marker to the location of the user, pos contains the lat and lng
       map.setCenter(pos); //Set the map to center to the position set in pos
-      
-      carparkInRadius(radius, pos)
-      // if (radius == 0) {
-      //   for (let item in carparkData) {
-      //     var latPos = pos.lat;
-      //     var lngPos = pos.lng;
-      //     var latCP = carparkData[item].x_coord;
-      //     var lngCP = carparkData[item].y_coord;
-      //     var distance = getDistanceFromLatLonInKm(latPos, lngPos, latCP, lngCP);
-      //     checker.push(distance);
-      //     if (distance <= 0.5) {
-      //       var cp = {
-      //         lat: latCP,
-      //         lng: lngCP
-      //       };
-      //       markerCarparks(cp, map);
-      //     }
-      //   }
-      // }
-      // if (radius == 1) {
-      //   for (let item in carparkData) {
-      //     var latPos = pos.lat;
-      //     var lngPos = pos.lng;
-      //     var latCP = carparkData[item].x_coord;
-      //     var lngCP = carparkData[item].y_coord;
-      //     var distance = getDistanceFromLatLonInKm(latPos, lngPos, latCP, lngCP);
-      //     checker.push(distance);
-      //     if (distance <= 1) {
-      //       var cp = {
-      //         lat: latCP,
-      //         lng: lngCP
-      //       };
-      //       markerCarparks(cp, map);
-      //     }
-      //   }
-      // }
-      // if (radius == 2) {
-      //   for (let item in carparkData) {
-      //     var latPos = pos.lat;
-      //     var lngPos = pos.lng;
-      //     var latCP = carparkData[item].x_coord;
-      //     var lngCP = carparkData[item].y_coord;
-      //     var distance = getDistanceFromLatLonInKm(latPos, lngPos, latCP, lngCP);
-      //     checker.push(distance);
-      //     if (distance <= 2) {
-      //       var cp = {
-      //         lat: latCP,
-      //         lng: lngCP
-      //       };
-      //       markerCarparks(cp, map);
-      //     }
-      //   }
-      // }
+      //GET FUNCTION TO FIND AND DISPLAY THE CARPARKS WITHIN THE USER RANGE BASED ON THE USER'S CURRENT LOCATION
+      carparkInRadius(pos)
     }, function() {
       handleLocationError(true, infoWindow, map.getCenter());
     });
@@ -101,7 +50,7 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
     'Error: Your browser doesn\'t support geolocation.');
   infoWindow.open(map);
 }
-function autoCompleteEntry(){
+function autoCompleteEntry(radius){
   var input = document.getElementById('place-input');
   var autocomplete = new google.maps.places.Autocomplete(input);
   // Set initial restrict to the greater list of countries.
@@ -215,36 +164,53 @@ function markerCarparks(myLatLng, map) {
 
 //   markers.push(marker);
 // }
+
 //FILTER THE CARPARKS WITHIN THE USER-SELECTED RADIUS
-function carparkInRadius(radius, pos){
-  let i = 0;
-  let range = [0.5, 1, 2];
+// function carparkInRadius2(radius, pos){
+//   let i = 0;
+//   let range = [0.5, 1, 2];
+//   var checker = [];
+
+//   while (i < 3){
+//     if (radius == i) {
+//       for (let item in carparkData) {
+//         var latPos = pos.lat;
+//         var lngPos = pos.lng;
+//         var latCP = carparkData[item].x_coord;
+//         var lngCP = carparkData[item].y_coord;
+//         var distance = getDistanceFromLatLonInKm(latPos, lngPos, latCP, lngCP);
+//         checker.push(distance);
+//         if (distance <= range[i]) {
+//           var cp = {
+//             lat: latCP,
+//             lng: lngCP
+//           };
+//           markerCarparks(cp, map);
+//         }
+//       }
+//     }
+//     i++;
+//   }
+// }
+function carparkInRadius(pos){
   var checker = [];
-  while (i < 3){
-    if (radius == i) {
-      for (let item in carparkData) {
-        var latPos = pos.lat;
-        var lngPos = pos.lng;
-        var latCP = carparkData[item].x_coord;
-        var lngCP = carparkData[item].y_coord;
-        var distance = getDistanceFromLatLonInKm(latPos, lngPos, latCP, lngCP);
-        checker.push(distance);
-        if (distance <= range[i]) {
-          var cp = {
-            lat: latCP,
-            lng: lngCP
-          };
-          markerCarparks(cp, map);
-        }
-      }
+  for (let item in carparkData) {
+    var latPos = pos.lat;
+    var lngPos = pos.lng;
+    var latCP = carparkData[item].x_coord;
+    var lngCP = carparkData[item].y_coord;
+    var distance = getDistanceFromLatLonInKm(latPos, lngPos, latCP, lngCP);
+    checker.push(distance);
+    if (distance <= radius) {
+      var cp = {
+        lat: latCP,
+        lng: lngCP
+      };
+      markerCarparks(cp, map);
     }
-    i++;
   }
 }
-//CALCULATE THE RADIUS SET BY USER AND FILTERED THE CARPARKS THAT FULFIL THE SETTING
-function carparksWithinRadius(radius){
-  
-}
+
 function toggleBounce() {
   if (marker.getAnimation() !== null) {
     marker.setAnimation(null);
@@ -354,7 +320,10 @@ getDataFromFile(function(carparkAddInfo) {
 console.log(carparkData)
 
 $(function() { //TO DETECT FOR CLICK FOR SEARCH & PLACE NEW MARKER
- 
+  $(".radius").click(function() {
+    radius = $(this).val();
+  })
+  
   //TO DETECT FOR 'ENTER' BY USER FOR SEARCH & PLACE NEW MARKER
   // $("#find-place").keyup(function() {
   //   if (event.keyCode === 13) {
@@ -365,9 +334,9 @@ $(function() { //TO DETECT FOR CLICK FOR SEARCH & PLACE NEW MARKER
   // })
   //TO DETECT FOR CLICK FOR SUBMIT
   $('#current-location').click(function() {
-    var radius = $('.search-drop').val();
+  //   var radius = $('.search-drop').val();
     clearMarker();
-    getCurrentLocation(radius);
+    getCurrentLocation();
   });
   //TO DETECT CHANGE IN DROP-DOWN SELECTION FOR THE RADIUS OF VIEW FOR NEARBY CARPARKS
   // $(".search-drop").change(function() {
