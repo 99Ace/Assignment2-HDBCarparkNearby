@@ -39,24 +39,18 @@
             </div>
             <hr>
             <!--CLICK TO ACTIVATE CURRENT LOCATION FUNCTION-->
-            <div class="ml-4">
-                <label>Find carparks within </label>
-                <div id="country-selector" class="pac-controls">
-                    <input type="radio" name="type" class="radius" value="0.5">
-                    <label>500m</label>
-                    <input type="radio" name="type" class="radius" value="1" checked="checked">
-                    <label>1km</label>
-                    <input type="radio" name="type" class="radius" value="2">
-                    <label>2km</label>
-                </div>
-            </div>
+           
             <div class="ml-4">
                 <img src="https://img.icons8.com/material/48/000000/worldwide-location.png">
-                <input id="current-location" type="button" class="badge-warning" value="Current location" />
+                <!--<input id="current-location" type="button" class="badge-warning" value="Current location" />-->
+                <input id="current-location" type="radio" name="location" class="location" value="current" checked = "checked">
+                <label>Use my Location</label>
             </div>
             <!--ENTER AND CLICK TO FIND THE LOCATION USING THE GETLOCATION FUNCTION-->
             <div class="ml-4 w-100">
                 <img src="https://img.icons8.com/ios/48/000000/search--v1.png">
+                <input id="current-location" type="radio" name="location" class="location" value="search">
+                <label>Find Location</label>
                 <input id="place-input" type="text" placeholder="Enter your destination" class="w-75"/>
                 <div id="infowindow-content">
                 <!-- PLACE ICON INFO -->
@@ -65,6 +59,17 @@
                 <span id="place-name"  class="title"></span><br>
                 <!-- PLACE PLACE ADDRESS -->
                 <span id="place-address"></span>
+                </div>
+            </div>
+            <div class="ml-4">
+                <label>Find carparks within </label>
+                <div>
+                    <input type="radio" name="radius" class="radius" value="0.5">
+                    <label>500m</label>
+                    <input type="radio" name="radius" class="radius" value="1">
+                    <label>1km</label>
+                    <input type="radio" name="radius" class="radius" value="2">
+                    <label>2km</label>
                 </div>
             </div>
 
