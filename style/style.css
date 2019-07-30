@@ -30,10 +30,23 @@ body {
     width:10%;
 }
 .header-frame{
-    height:15%;
+    height:10%;
     width:100%
 }
 
+
+/*INFO WINDOW STYLING FOR MAP AUTO-COMPLETE*/
+#infowindow-content .title {
+    font-weight: bold;
+}
+
+#infowindow-content {
+    display: none;
+}
+
+#map #infowindow-content {
+    display: inline;
+}
 /*PRESET COLORS*/
 .white{
     color:white;

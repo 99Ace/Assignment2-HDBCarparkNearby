@@ -29,12 +29,12 @@
         <div id="search-frame" class="entry-frame p-0 pl-2 col">
             <div class="header-frame bg-dark py-3 px-4 w-100 white">
                 <h1><span class="text-warning">HDB</span>Park Nearby</h1>
-            </div>  
+            </div>
             <div class="instruction-frame ml-2 px-3">
                 <h3>2 Simple Steps</h3>
                 <ul>
-                  <li>Step 1: Use Current Location or Enter Destination</li>
-                  <li>Step 2: Set the viewing radius for surrounding carparks</li>
+                    <li>Step 1: Use Current Location or Enter Destination</li>
+                    <li>Step 2: Set the viewing radius for surrounding carparks</li>
                 </ul>
             </div>
             <hr>
@@ -50,14 +50,55 @@
             <div class="ml-4">
                 <img src="https://img.icons8.com/material/48/000000/worldwide-location.png">
                 <input id="current-location" type="button" class="badge-warning" value="Current location" />
-           </div>
-            <!--ENTER AND CLICK TO FIND THE LOCATION USING THE GETLOCATION FUNCTION-->
-            <div class="ml-4">
-                <img src="https://img.icons8.com/ios/48/000000/search--v1.png"> 
-                <!--<input id="search" type="text" placeholder="Enter your Destination "/>-->
-                <input id="find-place" type="text" placeholder="Enter your destination"/>
-                <input id = "location-submit" type="button" class="badge-warning" value="Go"/>
             </div>
+            <!--ENTER AND CLICK TO FIND THE LOCATION USING THE GETLOCATION FUNCTION-->
+            <div class="ml-4 w-100">
+                <img src="https://img.icons8.com/ios/48/000000/search--v1.png">
+                <input id="place-input" type="text" placeholder="Enter your destination" class="w-75"/>
+                <div id="infowindow-content">
+                  <!-- PLACE ICON INFO -->
+                  <img src="" width="16" height="16" id="place-icon"> 
+                  <!-- PLACE PLACE NAME  -->
+                  <span id="place-name"  class="title"></span><br>
+                  <!-- PLACE PLACE ADDRESS -->
+                  <span id="place-address"></span>
+                </div>
+                
+                <!--<div class="pac-card" id="pac-card">-->
+                <!--    <div>-->
+                <!--        <div id="title">-->
+                <!--            Autocomplete search-->
+                <!--        </div>-->
+                <!--        <div id="type-selector" class="pac-controls">-->
+                <!--            <input type="radio" name="type" id="changetype-all" checked="checked">-->
+                <!--            <label for="changetype-all">All</label>-->
+
+                <!--            <input type="radio" name="type" id="changetype-establishment">-->
+                <!--            <label for="changetype-establishment">Establishments</label>-->
+
+                <!--            <input type="radio" name="type" id="changetype-address">-->
+                <!--            <label for="changetype-address">Addresses</label>-->
+
+                <!--            <input type="radio" name="type" id="changetype-geocode">-->
+                <!--            <label for="changetype-geocode">Geocodes</label>-->
+                <!--        </div>-->
+                <!--        <div id="strict-bounds-selector" class="pac-controls">-->
+                <!--            <input type="checkbox" id="use-strict-bounds" value="">-->
+                <!--            <label for="use-strict-bounds">Strict Bounds</label>-->
+                <!--        </div>-->
+                <!--    </div>-->
+                <!--    <div id="pac-container">-->
+                <!--        <input id="pac-input" type="text" placeholder="Enter a location">-->
+                <!--    </div>-->
+                <!--</div>-->
+            <!--    <div id="map"></div>-->
+            <!--    <div id="infowindow-content">-->
+            <!--        <img src="" width="16" height="16" id="place-icon">-->
+            <!--        <span id="place-name" class="title"></span><br>-->
+            <!--        <span id="place-address"></span>-->
+            </div>
+
+            <!--</div>-->
         </div>
 
         <div id="map"></div>
@@ -68,10 +109,10 @@
     <!--</div>-->
     <!--<div class="entry-frame row">-->
     <!--    <div id="entry-box" class="entry-box bg-secondary">-->
-        
+
     <!--    </ul>-->
     <!--    <span> or </span>-->
-    
+
     <!--  </div>-->
     <!--  <div id="entry-box" class="entry-box bg-white">-->
     <!--    <h3><span class="text-warning">Nearby Carparks</span></h3>-->
@@ -84,7 +125,7 @@
     <!--  </div>-->
     <!--</div>-->
     <!--<div class="display-frame row">-->
-    <!--  
+      
     <!--  <div class="zoom-frame">-->
     <!--<div id="map2"></div>-->
     <!--  </div>-->
@@ -93,8 +134,10 @@
 
     <script type="text/javascript" src="scripts/script.js"></script>
     <!--Google Map link-->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA1nzF_4Fq-BZd-nGgxYlpdbzeAiBtkkkw&callback=initMap&libraries=places" async defer></script>
-
+    <!--<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA1nzF_4Fq-BZd-nGgxYlpdbzeAiBtkkkw&callback=initMap&libraries=places" ></script>-->
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA1nzF_4Fq-BZd-nGgxYlpdbzeAiBtkkkw&callback=initMap&libraries=places">
+    </script>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <!--<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>-->
