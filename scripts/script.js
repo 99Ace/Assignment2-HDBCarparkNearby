@@ -6,14 +6,14 @@ var locationSearch = {
   fields: ['name', 'geometry'],
 }; //for holding the data to set the map
 var markers = [];
-var checker = [];
+
 
 //GOOGLE MAP FUNCTIONS
 //DISPLAY MAP
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: { lat: 1.3521, lng: 103.8198 },
-    zoom: 13
+    zoom: 15
   });
   infoWindow = new google.maps.InfoWindow;
   getCurrentLocation(1);
@@ -31,65 +31,59 @@ function getCurrentLocation(radius) {
       infoWindow.setPosition(pos); // set the window to the location of user
       markerPlacement(pos, map) //set the marker to the location of the user, pos contains the lat and lng
       map.setCenter(pos); //Set the map to center to the position set in pos
-
-      if (radius == 0) {
-        for (let item in carparkData) {
-          var latPos = pos.lat;
-          var lngPos = pos.lng;
-          var latCP = carparkData[item].x_coord;
-          var lngCP = carparkData[item].y_coord;
-          var distance = getDistanceFromLatLonInKm(latPos, lngPos, latCP, lngCP);
-          checker.push(distance);
-          if (distance <= 0.5) {
-            var cp = {
-              lat: latCP,
-              lng: lngCP
-            };
-            markerCarparks(cp, map);
-          }
-        }
-      }
-      if (radius == 1) {
-        for (let item in carparkData) {
-          var latPos = pos.lat;
-          var lngPos = pos.lng;
-          var latCP = carparkData[item].x_coord;
-          var lngCP = carparkData[item].y_coord;
-          var distance = getDistanceFromLatLonInKm(latPos, lngPos, latCP, lngCP);
-          checker.push(distance);
-          if (distance <= 1) {
-            var cp = {
-              lat: latCP,
-              lng: lngCP
-            };
-            markerCarparks(cp, map);
-          }
-        }
-      }
-      if (radius == 2) {
-        for (let item in carparkData) {
-          var latPos = pos.lat;
-          var lngPos = pos.lng;
-          var latCP = carparkData[item].x_coord;
-          var lngCP = carparkData[item].y_coord;
-          var distance = getDistanceFromLatLonInKm(latPos, lngPos, latCP, lngCP);
-          checker.push(distance);
-          if (distance <= 2) {
-            var cp = {
-              lat: latCP,
-              lng: lngCP
-            };
-            markerCarparks(cp, map);
-          }
-        }
-      }
-      // for (let item in carparkData) {
-      //   var pos = {
-      //         lat:carparkData[item].x_coord,
-      //         lng:carparkData[item].y_coord
-      //       }  
-      //   markerPlacement(pos,map)
-      // } 
+      
+      carparkInRadius(radius, pos)
+      // if (radius == 0) {
+      //   for (let item in carparkData) {
+      //     var latPos = pos.lat;
+      //     var lngPos = pos.lng;
+      //     var latCP = carparkData[item].x_coord;
+      //     var lngCP = carparkData[item].y_coord;
+      //     var distance = getDistanceFromLatLonInKm(latPos, lngPos, latCP, lngCP);
+      //     checker.push(distance);
+      //     if (distance <= 0.5) {
+      //       var cp = {
+      //         lat: latCP,
+      //         lng: lngCP
+      //       };
+      //       markerCarparks(cp, map);
+      //     }
+      //   }
+      // }
+      // if (radius == 1) {
+      //   for (let item in carparkData) {
+      //     var latPos = pos.lat;
+      //     var lngPos = pos.lng;
+      //     var latCP = carparkData[item].x_coord;
+      //     var lngCP = carparkData[item].y_coord;
+      //     var distance = getDistanceFromLatLonInKm(latPos, lngPos, latCP, lngCP);
+      //     checker.push(distance);
+      //     if (distance <= 1) {
+      //       var cp = {
+      //         lat: latCP,
+      //         lng: lngCP
+      //       };
+      //       markerCarparks(cp, map);
+      //     }
+      //   }
+      // }
+      // if (radius == 2) {
+      //   for (let item in carparkData) {
+      //     var latPos = pos.lat;
+      //     var lngPos = pos.lng;
+      //     var latCP = carparkData[item].x_coord;
+      //     var lngCP = carparkData[item].y_coord;
+      //     var distance = getDistanceFromLatLonInKm(latPos, lngPos, latCP, lngCP);
+      //     checker.push(distance);
+      //     if (distance <= 2) {
+      //       var cp = {
+      //         lat: latCP,
+      //         lng: lngCP
+      //       };
+      //       markerCarparks(cp, map);
+      //     }
+      //   }
+      // }
     }, function() {
       handleLocationError(true, infoWindow, map.getCenter());
     });
@@ -221,6 +215,36 @@ function markerCarparks(myLatLng, map) {
 
 //   markers.push(marker);
 // }
+//FILTER THE CARPARKS WITHIN THE USER-SELECTED RADIUS
+function carparkInRadius(radius, pos){
+  let i = 0;
+  let range = [0.5, 1, 2];
+  var checker = [];
+  while (i < 3){
+    if (radius == i) {
+      for (let item in carparkData) {
+        var latPos = pos.lat;
+        var lngPos = pos.lng;
+        var latCP = carparkData[item].x_coord;
+        var lngCP = carparkData[item].y_coord;
+        var distance = getDistanceFromLatLonInKm(latPos, lngPos, latCP, lngCP);
+        checker.push(distance);
+        if (distance <= range[i]) {
+          var cp = {
+            lat: latCP,
+            lng: lngCP
+          };
+          markerCarparks(cp, map);
+        }
+      }
+    }
+    i++;
+  }
+}
+//CALCULATE THE RADIUS SET BY USER AND FILTERED THE CARPARKS THAT FULFIL THE SETTING
+function carparksWithinRadius(radius){
+  
+}
 function toggleBounce() {
   if (marker.getAnimation() !== null) {
     marker.setAnimation(null);
