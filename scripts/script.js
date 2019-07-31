@@ -90,8 +90,8 @@ function autoCompleteEntry() {
     //   map.fitBounds(place.geometry.viewport);
     // }
     // else {
-      map.setCenter(place.geometry.location);
-      map.setZoom(15); // Why 17? Because it looks good.
+    map.setCenter(place.geometry.location);
+    map.setZoom(15); // Why 17? Because it looks good.
     // }
     marker.setPosition(place.geometry.location); // SETTING MARKER POSITION
     console.log(marker)
@@ -118,7 +118,7 @@ function autoCompleteEntry() {
     // markerPlacement (pos,map);
     markers.push(marker);
     console.log(markers)
-    // carparkInRadius(marker.position.lat(), marker.position.lng())
+    carparkInRadius(marker.position.lat(), marker.position.lng())
   })
 }
 //CREATE MARKER FUNCTION FOR CURRENT LOCATION
