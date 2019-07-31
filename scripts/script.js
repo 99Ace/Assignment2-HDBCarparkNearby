@@ -116,6 +116,8 @@ function autoCompleteEntry() {
     // console.log(marker.position)
     
     // markerPlacement (pos,map);
+    document.getElementById("place-input").value = "";
+
     markers.push(marker);
     console.log(markers)
     carparkInRadius(marker.position.lat(), marker.position.lng())
@@ -275,15 +277,15 @@ console.log(carparkData);
 $(function() { //TO DETECT FOR CLICK FOR SEARCH & PLACE NEW MARKER
   $(".radius").click(function() {
     radius = $(this).val();
-    // clearMarker()
-    // var currentLocation = markers[0]
-    // markerPlacement(currentLocation.lat, currentLocation.lng)
-    // carparkInRadius(currentLocation.lat, currentLocation.lng)
+    var pos = markers[0].position
+    console.log(pos)
+    clearMarker();
+    markerPlacement(pos, map);
+    carparkInRadius(pos.lat(), pos.lng())
   });
-  // $('#place-input').click(function() {
-  //   clearMarker();
-  // autoCompleteEntry();
-  // });
+    
+
+  
   $("#search-location").click(function(){
     // alert("search loc")
     $("#place-input").show()
