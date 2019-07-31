@@ -43,9 +43,11 @@ body {
 #infowindow-content {
     display: none;
 }
-
 #map #infowindow-content {
     display: inline;
+}
+#place-input{
+    display: none;
 }
 /*PRESET COLORS*/
 .white{

@@ -1,11 +1,7 @@
-/*global $ google setMapOnAll navigator axios*/
+/*global $ google navigator axios*/
 var map, infoWindow;
-var service; //Load map for PlacesService
-var locationSearch = {
-  query: 'Zoo Singapore',
-  fields: ['name', 'geometry'],
-}; //for holding the data to set the map
 var markers = [];
+var marker
 var radius;
 
 //GOOGLE MAP FUNCTIONS
@@ -21,7 +17,7 @@ function initMap() {
 }
 //FUNCTION TO GET THE LOCATION OF USER
 function getCurrentLocation() {
-    if (navigator.geolocation) {
+  if (navigator.geolocation) {
     //get the location of the user current position
     navigator.geolocation.getCurrentPosition(function(position) { // get user position
       var pos = {
@@ -50,74 +46,80 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
     'Error: Your browser doesn\'t support geolocation.');
   infoWindow.open(map);
 }
-function autoCompleteEntry(){
+
+function autoCompleteEntry() {
   var input = document.getElementById('place-input');
   var autocomplete = new google.maps.places.Autocomplete(input);
   // Set initial restrict to the greater list of countries.
   autocomplete.setComponentRestrictions(
     // LOCATION OF SEARCH RESTRICTED TO SINGAPORE
-    {'country': ['sg']});
+    { 'country': ['sg'] });
   // Specify only the data fields that are needed.
   autocomplete.setFields(
-      ['address_components', 'geometry', 'icon', 'name']);
-      // 'address_components' - address of place searched
-      // , 'geometry' - lat lng
-      // 'icon' - icon 
-      // 'name' - name of place searched
+    ['address_components', 'geometry', 'icon', 'name']);
+  // 'address_components' - address of place searched
+  // , 'geometry' - lat lng
+  // 'icon' - icon 
+  // 'name' - name of place searched
   // OPEN A NEW INFOWINDOW TO DISPLAY THE MARKER (COMPULSORY)
-  var infowindow = new google.maps.InfoWindow();
+  // var infowindow = new google.maps.InfoWindow();
   // GET THE SELECTED FROM THE DROP DOWN LIST BY INFO WINDOW (REQUIRED SINCE YOU NEED TO ALLOW USER TO SELECT FROM THE LIST)
   var infowindowContent = document.getElementById('infowindow-content');
   // SETTING THE MARKER/S TO BE PLACE ON MAP
-  infowindow.setContent(infowindowContent);
-  var marker = new google.maps.Marker({
+  infoWindow.setContent(infowindowContent);
+  marker = new google.maps.Marker({
     map: map, //DISPLAY ON WHICH MAP
-    anchorPoint: new google.maps.Point(0, -29)
+    // anchorPoint: new google.maps.Point(0, -29)
   });
   autocomplete.addListener('place_changed', function() {
-      // infowindow.close();
-      // marker.setVisible(false); // KINDA HIDING THE MARKER ONLY INSTEAD OF DELETING
-      // GET AND STORE THE SEARCH INFORMATION
-      var place = autocomplete.getPlace();
-      // ERROR MESSAGE IF WRONG INFO ENTERED
-      if (!place.geometry) {
-        // User entered the name of a Place that was not suggested and
-        // pressed the Enter key, or the Place Details request failed.
-        window.alert("No details available for input: '" + place.name + "'");
-        return;
-      }
+    clearMarker();
+    infoWindow.close();
+    marker.setVisible(false); // KINDA HIDING THE MARKER ONLY INSTEAD OF DELETING
+    // GET AND STORE THE SEARCH INFORMATION
+    var place = autocomplete.getPlace();
+    // ERROR MESSAGE IF WRONG INFO ENTERED
+    if (!place.geometry) {
+      // User entered the name of a Place that was not suggested and
+      // pressed the Enter key, or the Place Details request failed.
+      window.alert("No details available for input: '" + place.name + "'");
+      return;
+    }
 
-      // If the place has a geometry, then present it on a map.
-      if (place.geometry.viewport) {
-        map.fitBounds(place.geometry.viewport);
-      } else {
-        map.setCenter(place.geometry.location);
-        map.setZoom(11);  // Why 17? Because it looks good.
-      }
-      // clearMarker()
-      marker.setPosition(place.geometry.location); // SETTING MARKER POSITION
-      // marker.setVisible(true);// MAKE MARKER VISIBLE TO DISPLAY ON MAP
+    // If the place has a geometry, then present it on a map.
+    // if (place.geometry.viewport) {
+    //   map.fitBounds(place.geometry.viewport);
+    // }
+    // else {
+      map.setCenter(place.geometry.location);
+      map.setZoom(15); // Why 17? Because it looks good.
+    // }
+    marker.setPosition(place.geometry.location); // SETTING MARKER POSITION
+    console.log(marker)
+    marker.setVisible(true); // MAKE MARKER VISIBLE TO DISPLAY ON MAP
 
-      // STORE THE ADDRESS INFO FOR DISPLAY IN INFORMATION FOR MARKER
-      var address = '';
-      if (place.address_components) {
-        address = [
-          (place.address_components[0] && place.address_components[0].short_name || ''),
-          (place.address_components[1] && place.address_components[1].short_name || ''),
-          (place.address_components[2] && place.address_components[2].short_name || '')
-        ].join(' ');
-      }
-      // PLACE THE INFORMATION OF THE MARKER ON THE MAP
-      infowindowContent.children['place-icon'].src = place.icon;
-      infowindowContent.children['place-name'].textContent = place.name;
-      infowindowContent.children['place-address'].textContent = address;
-      // place the marker
-      // infowindow.open(map, marker);
-      clearMarker();
-      markerPlacement (marker,map);
-      // markers.push(marker);
-      carparkInRadius(marker.position.lat(), marker.position.lng())
-    })  
+    // STORE THE ADDRESS INFO FOR DISPLAY IN INFORMATION FOR MARKER
+    var address = '';
+    if (place.address_components) {
+      address = [
+        (place.address_components[0] && place.address_components[0].short_name || ''),
+        (place.address_components[1] && place.address_components[1].short_name || ''),
+        (place.address_components[2] && place.address_components[2].short_name || '')
+      ].join(' ');
+    }
+    // PLACE THE INFORMATION OF THE MARKER ON THE MAP
+    infowindowContent.children['place-icon'].src = place.icon;
+    infowindowContent.children['place-name'].textContent = place.name;
+    infowindowContent.children['place-address'].textContent = address;
+    // place the marker
+    // infowindow.open(map, marker);
+    // marker.setMap(null)
+    // console.log(marker.position)
+    
+    // markerPlacement (pos,map);
+    markers.push(marker);
+    console.log(markers)
+    // carparkInRadius(marker.position.lat(), marker.position.lng())
+  })
 }
 //CREATE MARKER FUNCTION FOR CURRENT LOCATION
 function markerPlacement(myLatLng, map) {
@@ -129,6 +131,7 @@ function markerPlacement(myLatLng, map) {
   });
   markers.push(marker);
 }
+
 function markerCarparks(myLatLng, map) {
   var icon = "https://img.icons8.com/color/48/000000/map-pin.png"
   var marker = new google.maps.Marker({
@@ -141,7 +144,7 @@ function markerCarparks(myLatLng, map) {
 }
 
 //FILTER THE CARPARKS WITHIN THE USER-SELECTED RADIUS
-function carparkInRadius(lat, lng){
+function carparkInRadius(lat, lng) {
   var checker = [];
   for (let item in carparkData) {
     var latPos = lat;
@@ -170,10 +173,13 @@ function carparkInRadius(lat, lng){
 // }
 //FUNCTION TO REMOVE MARKERS
 function clearMarker() {
-  markers.forEach(function(marker) {
-    marker.setMap(null);
+  markers.forEach(function(m) {
+    m.setMap(null);
   });
   markers = [];
+  marker = new google.maps.Marker({
+    map: map, //DISPLAY ON WHICH MAP
+  });
 }
 //FUNCTION TO SEARCH FOR A LOCATION AND PLACE A MARKER
 
@@ -226,6 +232,7 @@ function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
   var d = R * c; // Distance in km
   return d;
 }
+
 function deg2rad(deg) {
   return deg * (Math.PI / 180)
 }
@@ -269,14 +276,22 @@ $(function() { //TO DETECT FOR CLICK FOR SEARCH & PLACE NEW MARKER
   $(".radius").click(function() {
     radius = $(this).val();
     // clearMarker()
+    // var currentLocation = markers[0]
     // markerPlacement(currentLocation.lat, currentLocation.lng)
     // carparkInRadius(currentLocation.lat, currentLocation.lng)
   });
-  
-  
-  //TO DETECT FOR CLICK FOR SUBMIT
+  // $('#place-input').click(function() {
+  //   clearMarker();
+  // autoCompleteEntry();
+  // });
+  $("#search-location").click(function(){
+    // alert("search loc")
+    $("#place-input").show()
+  })
+  //TO DETECT FOR SELECT OF CURRENT LOCATION
   $('#current-location').click(function() {
     clearMarker();
+    $("#place-input").hide()
     getCurrentLocation();
   });
 });
