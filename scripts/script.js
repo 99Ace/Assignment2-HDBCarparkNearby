@@ -155,7 +155,7 @@ function carparkInRadius(lat, lng) {
     var lngPos = lng;
     var latCP = carparkData[item].x_coord;
     var lngCP = carparkData[item].y_coord;
-    var distance = getDistanceFromLatLonInKm(latPos, lngPos, latCP, lngCP);
+    var distance = getDistanceFromLatLonInKm(latPos, lngPos, latCP, lngCP).toFixed(2)*1000;
     
     checker.push(distance);
     if (distance <= radius) {
@@ -241,9 +241,26 @@ function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
   var d = R * c; // Distance in km
   return d;
 }
-
 function deg2rad(deg) {
   return deg * (Math.PI / 180)
+}
+
+function showTable(){
+  // TO CLEAR EXISTING TABLE (IF ANY) BEFORE DISPLAYING NEW DATA
+  $("#data-container").empty();
+  var i = 1;
+  for (let d of nearbyCarpark) {
+    $("#data-container").append(`
+      <tr>
+        <th scope="row">${i}</th>
+        <td>${d.address}</td>
+        <td>${d.lots_available}</td>
+        <td>${d.distance}m</td>
+        <td>${d.car_park_type}</td>
+      </tr>
+    `);
+    i++;
+  }
 }
 
 //ORIGINAL working set TO PROCESS DATA
@@ -292,12 +309,23 @@ $(function() { //TO DETECT FOR CLICK FOR SEARCH & PLACE NEW MARKER
     $("#hide-icon").show();
     $("#show-icon").hide();
   });  
+  $("#hide-setting-icon").click(function(){
+    $("#setting-detail").slideUp("slow");
+    $("#hide-setting-icon").hide();
+    $("#show-setting-icon").show();
+  });
+  $("#show-setting-icon").click(function(){
+    $("#setting-detail").slideDown("slow");
+    $("#hide-setting-icon").show();
+    $("#show-setting-icon").hide();
+  });   
   $(".radius").click(function() {
     radius = $(this).val();
     var pos = markers[0].position;
     clearMarker();
     markerPlacement(pos, map);
     carparkInRadius(pos.lat(), pos.lng());
+    showTable();
   });
   $("#search-location").click(function(){
     // alert("search loc")
