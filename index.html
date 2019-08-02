@@ -10,7 +10,9 @@
     <!--AXIOS link-->
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <!--JQuery Script-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+    
     <!--Own Scripts-->
     <link rel="stylesheet" href="style/style.css" type="text/css" />
     <style>
@@ -20,7 +22,7 @@
 
 <body>
     <main id="main-frame" class="row">
-        <!--<div id="introduction" class="entry-frame p-3 col text-center bg-dark white">-->
+        <!--<div id="intro" class="entry-frame p-3 col text-center bg-dark white">-->
         <!--    <div class="align-middle">-->
         <!--        <h1>Welcome to Find HDB Carpark Nearby</h1>-->
         <!--        <button id="start" class="btn btn-warning">Enter</button>-->
@@ -30,9 +32,15 @@
             <div class="header-frame bg-dark py-3 px-4 w-100 white">
                 <h1><span class="text-warning">HDB</span>Park Nearby</h1>
             </div>
-            <div class="instruction-frame ml-2 px-3">
-                <h3>2 Simple Steps</h3>
-                <ul>
+            <div class="instruction-frame mt-3 px-3">
+                <div class="mx-2 row justify-content-between">
+                <h4>Instructions</h4>
+                <div class="text-right">
+                    <img id="hide-icon" style="width:1.5rem" src="https://img.icons8.com/windows/32/000000/double-up.png">
+                    <img id="show-icon" style="width:1.5rem; display:none" src="https://img.icons8.com/ios-glyphs/30/000000/double-down.png">
+                </div>
+                </div>    
+               <ul id="instruction-detail" class="mb-0">
                     <li>Step 1: Use Current Location or Enter Destination</li>
                     <li>Step 2: Set the viewing radius for surrounding carparks</li>
                 </ul>
@@ -72,9 +80,9 @@
                     <label>2km</label>
                 </div>
             </div>
-            <div class="ml-4">
-                <input type = "submit" value="Refresh" id="refresh" class="btn btn-warning"/>
-            </div>
+            <!--<div class="ml-4">-->
+            <!--    <input type = "submit" value="Refresh" id="refresh" class="btn btn-warning"/>-->
+            <!--</div>-->
 
             <!--</div>-->
         </div>

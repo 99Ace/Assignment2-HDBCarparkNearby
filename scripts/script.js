@@ -1,8 +1,9 @@
 /*global $ google navigator axios*/
 var map, infoWindow;
 var markers = [];
-var marker
+var marker;
 var radius;
+var nearbyCarpark=[]
 
 //GOOGLE MAP FUNCTIONS
 //DISPLAY MAP
@@ -135,7 +136,7 @@ function markerPlacement(myLatLng, map) {
 }
 
 function markerCarparks(myLatLng, map) {
-  var icon = "https://img.icons8.com/color/48/000000/map-pin.png"
+  var icon = "https://img.icons8.com/color/48/000000/map-pin.png";
   var marker = new google.maps.Marker({
     position: myLatLng,
     map: map,
@@ -148,12 +149,14 @@ function markerCarparks(myLatLng, map) {
 //FILTER THE CARPARKS WITHIN THE USER-SELECTED RADIUS
 function carparkInRadius(lat, lng) {
   var checker = [];
+  var i = 0;
   for (let item in carparkData) {
     var latPos = lat;
     var lngPos = lng;
     var latCP = carparkData[item].x_coord;
     var lngCP = carparkData[item].y_coord;
     var distance = getDistanceFromLatLonInKm(latPos, lngPos, latCP, lngCP);
+    
     checker.push(distance);
     if (distance <= radius) {
       var cp = {
@@ -161,8 +164,12 @@ function carparkInRadius(lat, lng) {
         lng: lngCP
       };
       markerCarparks(cp, map);
+      nearbyCarpark[i]=carparkData[item];
+      Object.assign( nearbyCarpark[i], { 'distance' : distance });
+      i++;
     }
   }
+  console.log(nearbyCarpark);
 }
 
 //function toggleBounce() {
@@ -275,25 +282,31 @@ getDataFromFile(function(carparkAddInfo) {
 console.log(carparkData);
 
 $(function() { //TO DETECT FOR CLICK FOR SEARCH & PLACE NEW MARKER
+  $("#hide-icon").click(function(){
+    $("#instruction-detail").slideUp("slow");
+    $("#hide-icon").hide();
+    $("#show-icon").show();
+  });
+  $("#show-icon").click(function(){
+    $("#instruction-detail").slideDown("slow");
+    $("#hide-icon").show();
+    $("#show-icon").hide();
+  });  
   $(".radius").click(function() {
     radius = $(this).val();
-    var pos = markers[0].position
-    console.log(pos)
+    var pos = markers[0].position;
     clearMarker();
     markerPlacement(pos, map);
-    carparkInRadius(pos.lat(), pos.lng())
+    carparkInRadius(pos.lat(), pos.lng());
   });
-    
-
-  
   $("#search-location").click(function(){
     // alert("search loc")
-    $("#place-input").show()
-  })
+    $("#place-input").show();
+  });
   //TO DETECT FOR SELECT OF CURRENT LOCATION
   $('#current-location').click(function() {
     clearMarker();
-    $("#place-input").hide()
+    $("#place-input").hide();
     getCurrentLocation();
   });
 });
