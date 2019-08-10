@@ -14,10 +14,14 @@ var marker;
 var radius;
 var nearbyCarpark=[];
 var card = document.getElementById('pac-card');
-
+var iconMarker = [
+      "https://img.icons8.com/color/48/000000/car.png",
+      "https://img.icons8.com/ultraviolet/40/000000/filled-flag.png"
+  ]
 //GOOGLE MAP FUNCTIONS
 //DISPLAY MAP
 function initMap() {
+ 
   console.log(currentMarker.position)
   map = new google.maps.Map(document.getElementById('map'), {
     center: currentMarker.position,
@@ -44,7 +48,6 @@ function initMap() {
 //FUNCTION TO GET THE LOCATION OF USER
 function getCurrentLocation() {
   if (navigator.geolocation) {
-    var icon = "https://img.icons8.com/color/48/000000/car.png"
     //get the location of the user current position
     navigator.geolocation.getCurrentPosition(function(position) { // get user position
       var pos = {
@@ -52,7 +55,7 @@ function getCurrentLocation() {
         lng: position.coords.longitude
       };
       // infoWindow.setPosition(pos); // set the window to the location of user
-      markerPlacement(pos, icon, map); //set the marker to the location of the user, pos contains the lat and lng
+      markerPlacement(pos, iconMarker[0], map); //set the marker to the location of the user, pos contains the lat and lng
       map.setCenter(pos); //Set the map to center to the position set in pos
       //GET FUNCTION TO FIND AND DISPLAY THE CARPARKS WITHIN THE USER RANGE BASED ON THE USER'S CURRENT LOCATION
       carparkInRadius(pos.lat, pos.lng);
@@ -74,7 +77,7 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
   infoWindow.open(map);
 }
 
-function autoCompleteEntry() {
+function findLocation() {
   var input = document.getElementById('place-input');
   var autocomplete = new google.maps.places.Autocomplete(input);
   // Set initial restrict to the greater list of countries.
@@ -166,7 +169,6 @@ function markerPlacement(myLatLng, icon, map) {
 //FILTER THE CARPARKS WITHIN THE USER-SELECTED RADIUS
 function carparkInRadius(lat, lng) {
   // var checker = [];
-  var icon = "https://img.icons8.com/ultraviolet/40/000000/filled-flag.png";
   var i = 0;
   for (let item in carparkData) {
     var latPos = lat;
@@ -181,8 +183,8 @@ function carparkInRadius(lat, lng) {
         lat: latCP,
         lng: lngCP
       };
-      markerPlacement(cp, icon, map);
-      //nearbyCarpark[i]=carparkData[item];
+      markerPlacement(cp, iconMarker[1], map);
+      nearbyCarpark[i]=carparkData[item];
       Object.assign( nearbyCarpark[i], { 'distance' : distance });
       i++;
     }
@@ -255,27 +257,6 @@ function deg2rad(deg) {
   return deg * (Math.PI / 180)
 }
 
-function showTable(){
-  // TO CLEAR EXISTING TABLE (IF ANY) BEFORE DISPLAYING NEW DATA
-  $("#data-container").empty();
-  var i = 1;
-  for (let d of nearbyCarpark) {
-    if (i == 6){
-      break;
-    }
-    $("#data-container").append(`
-      <tr>
-        <th scope="row">${i}</th>
-        <td>${d.address}</td>
-        <td>${d.lots_available}</td>
-        <td>${d.distance}m</td>
-        <td>${d.car_park_type}</td>
-      </tr>
-    `);
-    i++;
-  }
-}
-
 //ORIGINAL working set TO PROCESS DATA
 getDataFromFile(function(carparkAddInfo) {
   getDataFromEndpoint(function(data) {
@@ -312,6 +293,32 @@ getDataFromFile(function(carparkAddInfo) {
 console.log(carparkData);
 
 $(function() { //TO DETECT FOR CLICK FOR SEARCH & PLACE NEW MARKER
+  $('#current-location').click(function() {
+    clearMarker();
+    $("#pac-container").hide();
+    getCurrentLocation();
+  }); 
+
+  $("#find-location").click(function(){
+    clearMarker();
+    $("#pac-container").show();
+    findLocation();
+  }); 
+ 
+  $(".radius").click(function() {
+    radius = $(this).val();
+    var pos = markers[0].position;
+    clearMarker();
+    markerPlacement(pos, iconMarker[0], map);
+    carparkInRadius(pos.lat(), pos.lng());
+    // showTable();
+  }); 
+ 
+ 
+ 
+ 
+ 
+ 
   // $("#hide-icon").click(function(){
   //   $("#instruction-detail").slideUp("slow");
   //   $("#hide-icon").hide();
@@ -332,21 +339,8 @@ $(function() { //TO DETECT FOR CLICK FOR SEARCH & PLACE NEW MARKER
   //   $("#hide-setting-icon").show();
   //   $("#show-setting-icon").hide();
   // });   
-  $(".radius").click(function() {
-    // $("#instruction-detail").slideUp("slow");
-    radius = $(this).val();
-    var pos = markers[0].position;
-    clearMarker();
-    markerPlacement(pos, map);
-    carparkInRadius(pos.lat(), pos.lng());
-    // showTable();
-  });
-  $("#find-location").click(function(){
-    $("#pac-container").show();
-  });
+  
+
   // //TO DETECT FOR SELECT OF CURRENT LOCATION
-  $('#current-location').click(function() {
-    clearMarker();
-    getCurrentLocation();
-  });
+
 });
