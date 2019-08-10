@@ -55,7 +55,12 @@ function getCurrentLocation() {
         lng: position.coords.longitude
       };
       // infoWindow.setPosition(pos); // set the window to the location of user
-      markerPlacement(pos, iconMarker[0], map); //set the marker to the location of the user, pos contains the lat and lng
+      markerPlacement({
+        pos :pos, 
+        icon: iconMarker[0], 
+        map: map,
+        animation : google.maps.Animation.BOUNCE
+      }); //set the marker to the location of the user, pos contains the lat and lng
       map.setCenter(pos); //Set the map to center to the position set in pos
       //GET FUNCTION TO FIND AND DISPLAY THE CARPARKS WITHIN THE USER RANGE BASED ON THE USER'S CURRENT LOCATION
       carparkInRadius(pos.lat, pos.lng);
@@ -146,6 +151,15 @@ function findLocation() {
     // console.log(marker.position)
     
     // markerPlacement (pos,map);
+    markerPlacement({
+        pos :{
+          lat:marker.position.lat(),
+          lng:marker.position.lng()
+        }, 
+        icon: iconMarker[0], 
+        map: map,
+        animation : google.maps.Animation.BOUNCE
+      });
     document.getElementById("place-input").value = "";
 
     markers.push(marker);
@@ -154,14 +168,16 @@ function findLocation() {
   })
 }
 //CREATE MARKER FUNCTION FOR CURRENT LOCATION
-function markerPlacement(myLatLng, icon, map) {
+function markerPlacement(geoInfo) {
   var marker = new google.maps.Marker({
-    map: map,
+    map: geoInfo.map,
     draggable: true,
-    icon : icon,
-    animation: google.maps.Animation.BOUNCE,
-    position: myLatLng
+    icon : geoInfo.icon,
+    position: geoInfo.pos
   });
+  if (geoInfo.animation){
+    marker.setAnimation(geoInfo.animation)
+  }
   markers.push(marker);
 }
 
@@ -183,7 +199,11 @@ function carparkInRadius(lat, lng) {
         lat: latCP,
         lng: lngCP
       };
-      markerPlacement(cp, iconMarker[1], map);
+      markerPlacement({
+        pos : cp, 
+        icon : iconMarker[1], 
+        map :map
+        });
       nearbyCarpark[i]=carparkData[item];
       Object.assign( nearbyCarpark[i], { 'distance' : distance });
       i++;
@@ -309,9 +329,13 @@ $(function() { //TO DETECT FOR CLICK FOR SEARCH & PLACE NEW MARKER
     radius = $(this).val();
     var pos = markers[0].position;
     clearMarker();
-    markerPlacement(pos, iconMarker[0], map);
+    markerPlacement({
+        pos :pos, 
+        icon: iconMarker[0], 
+        map: map,
+        animation : google.maps.Animation.BOUNCE
+      });
     carparkInRadius(pos.lat(), pos.lng());
-    // showTable();
   }); 
  
  
