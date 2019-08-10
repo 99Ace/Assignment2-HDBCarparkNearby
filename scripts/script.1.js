@@ -347,6 +347,7 @@ $(function() { //TO DETECT FOR CLICK FOR SEARCH & PLACE NEW MARKER
   // //TO DETECT FOR SELECT OF CURRENT LOCATION
   $('#current-location').click(function() {
     clearMarker();
+    $("#pac-container").hide();
     getCurrentLocation();
   });
 });
