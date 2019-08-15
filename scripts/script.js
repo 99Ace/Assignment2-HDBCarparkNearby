@@ -150,6 +150,7 @@ function markerCP(geoInfo) {
     marker.setAnimation(geoInfo.animation);
   }
   markers.push(marker)
+ 
 }
 
 //FILTER THE CARPARKS WITHIN THE USER-SELECTED RADIUS
@@ -167,38 +168,24 @@ function carparkInRadius(lat, lng) {
         lat: latCP,
         lng: lngCP
       };
-      // locations.push(cp);
-      // markers = locations.map(function(location, i) {
-      //     return new google.maps.Marker({
-      //       position: location,
-      //       icon : iconMarker[1],
-      //       // label: labels[i % labels.length]
-      //     });
-      // });
       markerCP({
         map : map,
         icon : iconMarker[1],
         pos : cp,
         animation : google.maps.Animation.DROP
       })
-      
-      
-      // markerCluster = new MarkerClusterer(map, markers,
-      //   {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
-      // // console.log(markers)
-      // markerTracker.push(markers)
-      // console.log(markers)
-       // markerTracker.push(markerCluster)
+     
+   
       // nearbyCarpark[i]=carparkData[item];
-      // // console.log(locations)
       // labels.push(carparkData[item].carpark_number); 
       // Object.assign( nearbyCarpark[i], { 'distance' : distance });
       i++;
     }
-
+      
   }
-  
-  // console.log(markerCluster);
+  console.log(markers)
+  markerCluster = new MarkerClusterer(map, markers,
+        {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
 }
  
 //FUNCTION TO REMOVE MARKERS
@@ -216,13 +203,10 @@ function clearMarkerCluster(){
   });
   markers = [];
 
-  // Clears all clusters and markers from the clusterer.
-  // if (markerCluster != undefined){
-  //   markerCluster.clearMarkers();
-  //   alert("click")
-  //   // markers = [];
-    // locations = [];
-  // }
+  if (markerCluster != undefined){
+    markerCluster.clearMarkers(); 
+  }
+
 }
 
 //FUNCTION TO SEARCH FOR A LOCATION AND PLACE A MARKER
