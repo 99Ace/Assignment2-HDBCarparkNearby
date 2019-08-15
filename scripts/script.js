@@ -7,19 +7,16 @@ var iconMarker = [
   ]  
 var card = document.getElementById('pac-card');
 var markerTracker =[];
-
-
-
-// var markers = [];
+var locations = [];
+var markers=[];
+var markerCluster;
 var radius;
-// var nearbyCarpark=[];
-// var locations=[];
-// var labels =[];
-
 
 //GOOGLE MAP FUNCTIONS
 //DISPLAY MAP
 function initMap() {
+  
+
   // console.log(currentMarker.position)
   map = new google.maps.Map(document.getElementById('map'), {
     map: map,
@@ -30,6 +27,7 @@ function initMap() {
     },
     zoom : 15
   });
+ 
   map.controls[google.maps.ControlPosition.LEFT].push(card);
   infoWindow = new google.maps.InfoWindow;
   getCurrentLocation();
@@ -50,7 +48,7 @@ function getCurrentLocation() {
       });
       map.setZoom(12); 
       map.setCenter(pos); 
-      // carparkInRadius(pos.lat, pos.lng);
+      carparkInRadius(currentMarker[0].position.lat(),currentMarker[0].position.lng());
     }, function() {
       handleLocationError(true, infoWindow, map.getCenter());
     });
@@ -99,16 +97,9 @@ function autoCompleteEntry() {
 
     map.setCenter(place.geometry.location);
     map.setZoom(12); 
-    // marker.setPosition(place.geometry.location); // SETTING MARKER POSITION
-    // marker.setAnimation(google.maps.Animation.BOUNCE);
-    // marker.setIcon(iconMarker[0]);
-    // markerPlacement({
-    //   pos : place.geometry.location,
-    //   icon : iconMarker[0],
-    //   map : map,
-    //   animation : google.maps.Animation.BOUNCE
-    // })
+
     clearCurrentMarker();
+    clearMarkerCluster();
     markerPlacement({
       pos : place.geometry.location,
       icon : iconMarker[0],
@@ -130,12 +121,8 @@ function autoCompleteEntry() {
     infowindowContent.children['place-address'].textContent = address;
     document.getElementById("search-location").value = "";
 
-    // currentMarker.position = {
-    //   lat : place.geometry.location.lat(),
-    //   lng : place.geometry.location.lng()
-    // }
     currentMarker.push(marker)
-    // carparkInRadius(marker.position.lat(), marker.position.lng())
+    carparkInRadius(currentMarker[0].position.lat(),currentMarker[0].position.lng());
   })
 }
 
@@ -152,7 +139,18 @@ function markerPlacement(geoInfo) {
   }
   currentMarker.push(marker)
 }
-
+function markerCP(geoInfo) {
+  var marker = new google.maps.Marker({
+    map: geoInfo.map,
+    draggable: true,
+    icon : geoInfo.icon,
+    position: geoInfo.pos
+  });
+  if (geoInfo.animation){
+    marker.setAnimation(geoInfo.animation);
+  }
+  markers.push(marker)
+}
 
 //FILTER THE CARPARKS WITHIN THE USER-SELECTED RADIUS
 function carparkInRadius(lat, lng) {
@@ -169,54 +167,64 @@ function carparkInRadius(lat, lng) {
         lat: latCP,
         lng: lngCP
       };
-      
-      // markerPlacement({
-      //   pos : cp, 
-      //   icon : iconMarker[1], 
-      //   map :map
-      //   });
-      var locations = [];
-      locations.push(cp);
-      console.log(locations)
-
-      // nearbyCarpark[i]=carparkData[item];
-      // // console.log(locations)
-      // labels.push(carparkData[item].carpark_number); 
-
-      // var markers = locations.map(function(location, i) {
+      // locations.push(cp);
+      // markers = locations.map(function(location, i) {
       //     return new google.maps.Marker({
       //       position: location,
       //       icon : iconMarker[1],
-      //       label: labels[i % labels.length]
+      //       // label: labels[i % labels.length]
       //     });
       // });
+      markerCP({
+        map : map,
+        icon : iconMarker[1],
+        pos : cp,
+        animation : google.maps.Animation.DROP
+      })
+      
+      
+      // markerCluster = new MarkerClusterer(map, markers,
+      //   {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+      // // console.log(markers)
       // markerTracker.push(markers)
       // console.log(markers)
-      // var markerCluster = new MarkerClusterer(map, markers,
-      //   {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
-          
+       // markerTracker.push(markerCluster)
+      // nearbyCarpark[i]=carparkData[item];
+      // // console.log(locations)
+      // labels.push(carparkData[item].carpark_number); 
       // Object.assign( nearbyCarpark[i], { 'distance' : distance });
       i++;
     }
+
   }
-  // console.log(locations);
+  
+  // console.log(markerCluster);
 }
  
 //FUNCTION TO REMOVE MARKERS
 function clearCurrentMarker() {
   currentMarker.forEach(function(m) {
     m.setMap(null);
-    console.log(m)
+    // console.log(m)
   });
   currentMarker = [];
 }
-function clearMarker() {
-  markerTracker.forEach(function(m) {
+function clearMarkerCluster(){
+  markers.forEach(function(m) {
     m.setMap(null);
-    console.log(m)
+    // console.log(m)
   });
-  markerTracker = [];
+  markers = [];
+
+  // Clears all clusters and markers from the clusterer.
+  // if (markerCluster != undefined){
+  //   markerCluster.clearMarkers();
+  //   alert("click")
+  //   // markers = [];
+    // locations = [];
+  // }
 }
+
 //FUNCTION TO SEARCH FOR A LOCATION AND PLACE A MARKER
 
 
@@ -309,6 +317,7 @@ console.log(carparkData);
 $(function() { //TO DETECT FOR CLICK FOR SEARCH & PLACE NEW MARKER
   $('#current-location').click(function() {
     clearCurrentMarker();
+    clearMarkerCluster();
     $("#pac-container").hide();
     getCurrentLocation();
   }); 
@@ -320,8 +329,7 @@ $(function() { //TO DETECT FOR CLICK FOR SEARCH & PLACE NEW MARKER
  
   $(".radius").click(function() {
     radius = $(this).val();
-    console.log(currentMarker)
-    // markerPlacement(currentMarker[0])
+    clearMarkerCluster();
     carparkInRadius(currentMarker[0].position.lat(),currentMarker[0].position.lng());
   }); 
  
