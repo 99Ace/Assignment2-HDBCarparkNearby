@@ -3,7 +3,7 @@ var map, infoWindow;
 var currentMarker = [];
 var iconMarker = [
       "https://img.icons8.com/color/48/000000/car.png",
-      "https://img.icons8.com/ultraviolet/40/000000/filled-flag.png"
+      "https://img.icons8.com/doodle/48/000000/flag--v4.png"
   ]  
 var card = document.getElementById('pac-card');
 var markerTracker =[];
@@ -28,7 +28,7 @@ function initMap() {
     zoom : 15
   });
  
-  map.controls[google.maps.ControlPosition.LEFT].push(card);
+  map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(card);
   infoWindow = new google.maps.InfoWindow;
   getCurrentLocation();
 }
@@ -130,7 +130,7 @@ function autoCompleteEntry() {
 function markerPlacement(geoInfo) {
   var marker = new google.maps.Marker({
     map: geoInfo.map,
-    draggable: true,
+    draggable: false,
     icon : geoInfo.icon,
     position: geoInfo.pos
   });
@@ -142,7 +142,7 @@ function markerPlacement(geoInfo) {
 function markerCP(geoInfo) {
   var marker = new google.maps.Marker({
     map: geoInfo.map,
-    draggable: true,
+    draggable: false,
     icon : geoInfo.icon,
     position: geoInfo.pos
     
@@ -155,11 +155,15 @@ function markerCP(geoInfo) {
     content : `<table class="table table-dark">
             <thead>
               <tr>
-                <th scope="col">${geoInfo.info.carpark_number}</th>
+                <th scope="col" class="text-warning">${geoInfo.info.carpark_number}</th>
                 <th>Info</td>
               </tr>
             </thead>
             <tbody>
+              <tr>
+                <th scope="row">Distance from location</th>
+                <td>${geoInfo.info.address}</td>
+              </tr>
               <tr>
                 <th scope="row">Lots available</th>
                 <td>${geoInfo.info.lots_available}</td>
@@ -179,13 +183,11 @@ function markerCP(geoInfo) {
             </tbody>
           </table>
           `
-          
-          
-          
-          
       });
       marker.addListener('click', function(){
           infoWindow.open(map,marker);
+          map.setCenter(marker); 
+
   });
   markers.push(marker)
  
@@ -201,7 +203,7 @@ function carparkInRadius(lat, lng) {
     var latCP = carparkData[item].x_coord;
     var lngCP = carparkData[item].y_coord;
     var distance = getDistanceFromLatLonInKm(latPos, lngPos, latCP, lngCP).toFixed(2)*1000; 
-    if (distance <= radius) {
+    if (distance <= radius && carparkData[item].lots_available >0) {
       var cp = {
         lat: latCP,
         lng: lngCP
