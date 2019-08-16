@@ -11,7 +11,7 @@ var locations = [];
 var markers=[];
 var markerCluster;
 var radius;
-
+var counter =1;
 //GOOGLE MAP FUNCTIONS
 //DISPLAY MAP
 function initMap() {
@@ -145,12 +145,44 @@ function markerCP(geoInfo) {
     draggable: true,
     icon : geoInfo.icon,
     position: geoInfo.pos
+    
   });
   if (geoInfo.animation){
     marker.setAnimation(geoInfo.animation);
   }
+  counter++;
   var infoWindow = new google.maps.InfoWindow({
-          content : "<h1>I am available</h1>"
+    content : `<table class="table table-dark">
+            <thead>
+              <tr>
+                <th scope="col">${geoInfo.info.carpark_number}</th>
+                <th>Info</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Lots available</th>
+                <td>${geoInfo.info.lots_available}</td>
+              </tr>
+              <tr>
+                <th scope="row">Carpark Type</th>
+                <td>${geoInfo.info.car_park_type}</td>
+              </tr>
+              <tr>
+                <th scope="row">Free Parking</th>
+                <td>${geoInfo.info.free_parking}</td>
+              </tr>
+              <tr>
+                <th scope="row">Distance from location</th>
+                <td>${geoInfo.distance}</td>
+              </tr>
+            </tbody>
+          </table>
+          `
+          
+          
+          
+          
       });
       marker.addListener('click', function(){
           infoWindow.open(map,marker);
@@ -162,7 +194,7 @@ function markerCP(geoInfo) {
 //FILTER THE CARPARKS WITHIN THE USER-SELECTED RADIUS
 function carparkInRadius(lat, lng) {
   // var checker = [];
-  var i = 0;
+  // var i = 0;
   for (let item in carparkData) {
     var latPos = lat;
     var lngPos = lng;
@@ -178,7 +210,9 @@ function carparkInRadius(lat, lng) {
         map : map,
         icon : iconMarker[1],
         pos : cp,
-        animation : google.maps.Animation.DROP
+        animation : google.maps.Animation.DROP,
+        info : carparkData[item],
+        distance : distance
       })
      // SET INFOWINDOW FOR THE MARKER UPON CLICK
       
@@ -186,7 +220,7 @@ function carparkInRadius(lat, lng) {
       // nearbyCarpark[i]=carparkData[item];
       // labels.push(carparkData[item].carpark_number); 
       // Object.assign( nearbyCarpark[i], { 'distance' : distance });
-      i++;
+      // i++;
     }
       
   }
