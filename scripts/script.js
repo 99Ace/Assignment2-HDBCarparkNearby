@@ -149,6 +149,12 @@ function markerCP(geoInfo) {
   if (geoInfo.animation){
     marker.setAnimation(geoInfo.animation);
   }
+  var infoWindow = new google.maps.InfoWindow({
+          content : "<h1>I am available</h1>"
+      });
+      marker.addListener('click', function(){
+          infoWindow.open(map,marker);
+  });
   markers.push(marker)
  
 }
@@ -174,7 +180,8 @@ function carparkInRadius(lat, lng) {
         pos : cp,
         animation : google.maps.Animation.DROP
       })
-     
+     // SET INFOWINDOW FOR THE MARKER UPON CLICK
+      
    
       // nearbyCarpark[i]=carparkData[item];
       // labels.push(carparkData[item].carpark_number); 
