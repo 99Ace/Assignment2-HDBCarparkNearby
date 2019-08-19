@@ -4,20 +4,15 @@ var currentMarker = [];
 var iconMarker = [
       "https://img.icons8.com/color/48/000000/car.png",
       "https://img.icons8.com/doodle/48/000000/flag--v4.png"
-  ]  
+  ];  
 var card = document.getElementById('pac-card');
-var markerTracker =[];
-var locations = [];
 var markers=[];
 var markerCluster;
 var radius;
-var counter =1;
+
 //GOOGLE MAP FUNCTIONS
 //DISPLAY MAP
 function initMap() {
-  
-
-  // console.log(currentMarker.position)
   map = new google.maps.Map(document.getElementById('map'), {
     map: map,
     draggable: true,
@@ -27,8 +22,7 @@ function initMap() {
     },
     zoom : 15
   });
- 
-  map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(card);
+  map.controls[google.maps.ControlPosition.LEFT_TOP].push(card);
   infoWindow = new google.maps.InfoWindow;
   getCurrentLocation();
 }
@@ -58,7 +52,7 @@ function getCurrentLocation() {
     handleLocationError(false, infoWindow, map.getCenter());
   }
 }
-//function to send Error message if location sevice fail
+//Function to send Error message if location sevice fail
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
   infoWindow.setPosition(pos);
   infoWindow.setContent(browserHasGeolocation ?
@@ -151,6 +145,7 @@ function markerCP(geoInfo) {
     marker.setAnimation(geoInfo.animation);
   }
   counter++;
+  // SET INFOWINDOW FOR THE MARKER UPON CLICK
   var infoWindow = new google.maps.InfoWindow({
     content : `<table class="table table-dark">
             <thead>
@@ -216,15 +211,7 @@ function carparkInRadius(lat, lng) {
         info : carparkData[item],
         distance : distance
       })
-     // SET INFOWINDOW FOR THE MARKER UPON CLICK
-      
-   
-      // nearbyCarpark[i]=carparkData[item];
-      // labels.push(carparkData[item].carpark_number); 
-      // Object.assign( nearbyCarpark[i], { 'distance' : distance });
-      // i++;
     }
-      
   }
   console.log(markers)
   markerCluster = new MarkerClusterer(map, markers,
@@ -251,9 +238,6 @@ function clearMarkerCluster(){
   }
 
 }
-
-//FUNCTION TO SEARCH FOR A LOCATION AND PLACE A MARKER
-
 
 var dataSource = "https://api.data.gov.sg/v1/transport/carpark-availability";
 var dataSource2 = "carparkdata.json";
@@ -305,7 +289,8 @@ function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
 function deg2rad(deg) {
   return deg * (Math.PI / 180)
 }
-//ORIGINAL working set TO PROCESS DATA
+// COMBINE ONLINE DATA (from data.gov.sg) WITH LOCAL DATA (file:carparkdata.json) 
+// & CONVERT TO COORDINATES [3414(SVY21) to 4326(WGS84)] TO AND STORE IN AN LOCAL ARRAY (array:carparkdata)
 getDataFromFile(function(carparkAddInfo) {
   getDataFromEndpoint(function(data) {
     for (let item in data) {
@@ -338,8 +323,6 @@ getDataFromFile(function(carparkAddInfo) {
     }
   })
 })
-console.log(carparkData);
-
 
 $(function() { //TO DETECT FOR CLICK FOR SEARCH & PLACE NEW MARKER
   $('#current-location').click(function() {

@@ -4,10 +4,8 @@
 
 This Website is built to aid auto drivers to find the nearest reachable capark lot in housing property in his vincinity (within Singapore). 
 Some areas may be hot-spot for parking and it is constantly a problem for drivers to locate alternate parking space.
-Through this website, they are capable to determine if they choose to wait in the queue or cross to an alternate accessible parking space nearby
-
-This is a site that helps driver to scan for close-by carpark lots. Having arrive at the destination on schedule yet the car park lots are full. What other place would i be able to Park?  This site takes care of each driver's concern by demonstrating all the __**nearby** ** accessible carparks__ around.  
-It spares the driver time and misery of scanning for one, accordingly augmenting shopping or showtime.
+Through this website, they are capable to determine if they choose to wait in the queue or cross to an alternate accessible parking space nearby.
+It aims to convert waiting time to shopping time.
 
 ## SCOPE
 The website plans to have the following features.
