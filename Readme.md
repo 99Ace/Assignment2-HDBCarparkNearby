@@ -64,6 +64,8 @@ My Design of the site:
 
 _Limitations: Page will take while to load the data from the website as the website uses 3 callback functions to combine 2 data sets and also a website to convert the 3414(SVY21) to 4326(WGS84)_
 
+_Errors in console is due to the limit set by oneMap.sg, does not affect the function of the site_
+
 _Features Left to Implement_
 _- Route to the selected carpark from current location (Not implemented due to cost consideration)_
 
