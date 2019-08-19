@@ -16,12 +16,11 @@ _Basic_
 - display the map
 - get the current location of the user
 - exhibit to the user the various carparks availability status
-- limit the search-radius to within 200m 300m or 500m
+- limit the search-radius to within 500m, 1km or 2km
 
 _Intermediate_
 - allow user to input the destination so that he can plan ahead for his journey
-- allow user to chose the desired carpark to go to
-- plot the route to the carpark chosen
+- allow user to chose the desired carpark to go to & plot the route to the carpark chosen
 
 _Advance (current version will not have any development for this level)_
 - allow user to store the favorite location as part of their database
@@ -31,8 +30,7 @@ _Advance (current version will not have any development for this level)_
 
 A live demo can be found here. https://anacodae.github.io/Assignment2-HDBCarparkNearby/ 
 
-
-<img width="700" alt="screenshot" src="https://user-images.githubusercontent.com/21357021/62422908-97fd2e80-b6ec-11e9-898e-8f08c891b2a9.png">
+![Overview of Project in different devices](https://raw.githubusercontent.com/AnaCodaE/Assignment2-HDBCarparkNearby/master/images/project.png)
 
 ## UX
 My Considerations for the website:
@@ -70,10 +68,18 @@ _Limitations: Page will take while to load the data from the website as the webs
 
 _Features Left to Implement_
 _- Route to the selected carpark from current location (Not implemented due to cost consideration)_
-_- Highlight the Nearest Carpark._
 
 ## Testing
 Manual Testing is done to ensure that the all functions are functional.
+
+
+*No* | *Steps* | *Expected Results* | *Observations*
+--- | --- | --- | ---
+1 | `Page show load with current location and upon clicking on 'Current Location' radio button` | `Display the current location of user` | **Pass** 
+2 | `Click on 'Find Location' radio button` | `Display an input box for user to key in the location` | **Pass** 
+3 | `Click on the different radius to view nearby carparks` | `Display markers for surrounding markers within selected radius` | **Pass** 
+4 | `Enter location in the input box and select from dropdown` | `Display will center to the selected destination` | **Pass** 
+5 | `Click on the carparks marker` | `Show an infoWindow showing; carpark address, carpark type, lots available, any free parking and distance from current location` | **Pass** 
 
 ## Deployment
 
