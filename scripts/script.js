@@ -212,7 +212,6 @@ function carparkInRadius(lat, lng) {
       })
     }
   }
-  console.log(markers)
   markerCluster = new MarkerClusterer(map, markers,
         {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
 }
@@ -228,7 +227,6 @@ function clearCurrentMarker() {
 function clearMarkerCluster(){
   markers.forEach(function(m) {
     m.setMap(null);
-    // console.log(m)
   });
   markers = [];
 
