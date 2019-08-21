@@ -9,6 +9,7 @@ var card = document.getElementById('pac-card');
 var markers=[];
 var markerCluster;
 var radius;
+var counter =1;
 
 //GOOGLE MAP FUNCTIONS
 //DISPLAY MAP
@@ -190,8 +191,6 @@ function markerCP(geoInfo) {
 
 //FILTER THE CARPARKS WITHIN THE USER-SELECTED RADIUS
 function carparkInRadius(lat, lng) {
-  // var checker = [];
-  // var i = 0;
   for (let item in carparkData) {
     var latPos = lat;
     var lngPos = lng;
